@@ -3,13 +3,14 @@ from exceptions import CellOccupied
 
 
 class Board:
-    def __init__(self, rows, columns, screen_size):
+    def __init__(self, rows, columns, screen_size, settings):
         screen_width, screen_height = screen_size
+        self.settings = settings
         self.offset = 1
         self.rows = rows
         self.columns = columns
-        self.cell_x_size = screen_width / (self.rows + self.offset * 2)
-        self.cell_y_size = screen_height / (self.columns + self.offset * 2)
+        self.cell_x_size = int(screen_width / (self.rows + self.offset * 2))
+        self.cell_y_size = int(screen_height / (self.columns + self.offset * 2))
         self.board = self.get_empty_board()
 
     def get_empty_board(self):
@@ -23,7 +24,7 @@ class Board:
                               self.cell_x_size, self.cell_y_size),
                              1)
 
-    def get_cell(self, row, col):
+    def get_object_in_cell(self, row, col):
         return self.board[row][col]
 
     def get_cell_by_position(self, pos):
@@ -37,4 +38,5 @@ class Board:
         if not replace and self.board[row][col]:
             raise CellOccupied
         tower_top_left = (self.cell_x_size * (col + 1), self.cell_y_size * (row + 1))
-        self.board[row][col] = tower_class(tower_top_left, self.cell_x_size, self.cell_y_size)
+        self.board[row][col] = tower_class(tower_top_left, self.cell_x_size, self.cell_y_size,
+                                           self.settings.all_sprites)

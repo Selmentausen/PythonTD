@@ -1,7 +1,8 @@
 from classes.board import Board
 import pygame as pg
 import sys
-from characters import GameObject
+from characters import BaseTower, ArrowTower
+from settings import Settings
 
 pg.init()
 
@@ -40,7 +41,8 @@ def menu(surface):
 
 
 def main_loop():
-    board = Board(10, 10, SCREEN_SIZE)
+    board = Board(10, 10, SCREEN_SIZE, settings)
+    board.add_tower_to_cell(ArrowTower, 0, 0)
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -49,9 +51,12 @@ def main_loop():
                 if event.key == pg.K_ESCAPE:
                     menu(screen)
             elif event.type == pg.MOUSEBUTTONDOWN:
-                print(board.get_cell_by_position(event.pos))
+                coords = board.get_cell_by_position(event.pos)
+                if coords:
+                    print(board.get_object_in_cell(*coords))
         screen.fill((0, 0, 0))
         board.render(screen)
+        settings.all_sprites.draw(screen)
         pg.display.flip()
         clock.tick(FPS)
 
@@ -59,6 +64,7 @@ def main_loop():
 if __name__ == '__main__':
     screen = pg.display.set_mode(SCREEN_SIZE)
     clock = pg.time.Clock()
+    settings = Settings()
 
     start_screen(screen)
     main_loop()
