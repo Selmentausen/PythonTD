@@ -1,11 +1,12 @@
 from classes.board import Board
 import pygame as pg
 import sys
+from characters import GameObject
 
 pg.init()
 
 FPS = 60
-SCREEN_SIZE = (800, 800)
+SCREEN_SIZE = (800, 600)
 
 
 def terminate():
@@ -44,9 +45,11 @@ def main_loop():
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 terminate()
-            if event.type == pg.KEYDOWN:
+            elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     menu(screen)
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                print(board.get_cell_by_position(event.pos))
         screen.fill((0, 0, 0))
         board.render(screen)
         pg.display.flip()

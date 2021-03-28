@@ -26,10 +26,15 @@ class Board:
     def get_cell(self, row, col):
         return self.board[row][col]
 
-    def add_to_cell(self, obj, row, col, replace=False):
+    def get_cell_by_position(self, pos):
+        x, y = pos
+        row = int((x - self.cell_x_size) // self.cell_x_size)
+        col = int((y - self.cell_y_size) // self.cell_y_size)
+        if 0 <= col < self.columns and 0 <= row < self.rows:
+            return row, col
+
+    def add_tower_to_cell(self, tower_class, row, col, replace=False):
         if not replace and self.board[row][col]:
             raise CellOccupied
-        self.board[row][col] = obj
-
-
-
+        tower_top_left = (self.cell_x_size * (col + 1), self.cell_y_size * (row + 1))
+        self.board[row][col] = tower_class(tower_top_left, self.cell_x_size, self.cell_y_size)
