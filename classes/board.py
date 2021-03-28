@@ -1,4 +1,5 @@
 import pygame as pg
+from exceptions import CellOccupied
 
 
 class Board:
@@ -21,3 +22,14 @@ class Board:
                              (self.cell_x_size * (j + 1), self.cell_y_size * (i + 1),
                               self.cell_x_size, self.cell_y_size),
                              1)
+
+    def get_cell(self, row, col):
+        return self.board[row][col]
+
+    def add_to_cell(self, obj, row, col, replace=False):
+        if not replace and self.board[row][col]:
+            raise CellOccupied
+        self.board[row][col] = obj
+
+
+
