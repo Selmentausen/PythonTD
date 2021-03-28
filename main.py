@@ -3,6 +3,7 @@ import sys
 
 from classes.towers import ArrowTower
 from classes.board import Board
+from classes.miscellaneous import Button
 from settings import Settings
 
 pg.init()
@@ -40,8 +41,10 @@ def menu(surface):
 
 
 def main_loop():
-    board = Board(10, 10, settings.screen_size, settings)
+    board = Board(6, 6, settings.map_size, settings)
+    print(settings.map_size)
     board.add_tower_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
+    test_btn = Button((100, 500), 100, 50, all_sprites)
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:

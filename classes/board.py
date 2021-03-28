@@ -9,8 +9,9 @@ class Board:
         self.offset = 1
         self.rows = rows
         self.columns = columns
-        self.cell_x_size = int(screen_width / (self.rows + self.offset * 2))
-        self.cell_y_size = int(screen_height / (self.columns + self.offset * 2))
+        self.cell_x_size = int(screen_width / (self.columns + self.offset * 2))
+        self.cell_y_size = int(screen_height / (self.rows + self.offset * 2))
+        print(self.cell_x_size, self.cell_y_size)
         self.board = self.get_empty_board()
 
     def get_empty_board(self):
