@@ -34,7 +34,7 @@ def menu(surface):
             if event.type == pg.QUIT:
                 terminate()
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
+                if event.key == pg.K_m:
                     running = False
         surface.fill(pg.Color('Blue'))
         pg.display.flip()
@@ -42,21 +42,21 @@ def menu(surface):
 
 def main_loop():
     board = Board(6, 6, settings.map_size, settings)
-    print(settings.map_size)
     board.add_tower_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
-    test_btn = Button((100, 500), 100, 50, all_sprites)
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 terminate()
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
+                    terminate()
+                if event.key == pg.K_m:
                     menu(screen)
             elif event.type == pg.MOUSEBUTTONDOWN:
                 coords = board.get_cell_by_position(event.pos)
                 if coords:
                     print(board.get_object_in_cell(*coords))
-        screen.fill((0, 0, 0))
+        screen.fill(pg.Color('black'))
         board.render(screen)
         all_sprites.draw(screen)
         pg.display.flip()
@@ -65,7 +65,8 @@ def main_loop():
 
 if __name__ == '__main__':
     settings = Settings()
-    screen = pg.display.set_mode(settings.screen_size)
+    screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
+    settings.set_screen_sizes(screen.get_size())
     clock = pg.time.Clock()
 
     start_screen(screen)
