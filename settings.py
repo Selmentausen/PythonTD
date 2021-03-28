@@ -3,4 +3,5 @@ import pygame as pg
 
 class Settings:
     def __init__(self):
-        self.all_sprites = pg.sprite.Group()
+        self.screen_size = (800, 600)
+        self.fps = 60

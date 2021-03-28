@@ -1,13 +1,12 @@
-from classes.board import Board
 import pygame as pg
 import sys
-from characters import BaseTower, ArrowTower
+
+from classes.towers import ArrowTower
+from classes.board import Board
 from settings import Settings
 
 pg.init()
-
-FPS = 60
-SCREEN_SIZE = (800, 600)
+all_sprites = pg.sprite.Group()
 
 
 def terminate():
@@ -41,8 +40,8 @@ def menu(surface):
 
 
 def main_loop():
-    board = Board(10, 10, SCREEN_SIZE, settings)
-    board.add_tower_to_cell(ArrowTower, 0, 0)
+    board = Board(10, 10, settings.screen_size, settings)
+    board.add_tower_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -56,15 +55,15 @@ def main_loop():
                     print(board.get_object_in_cell(*coords))
         screen.fill((0, 0, 0))
         board.render(screen)
-        settings.all_sprites.draw(screen)
+        all_sprites.draw(screen)
         pg.display.flip()
-        clock.tick(FPS)
+        clock.tick(settings.fps)
 
 
 if __name__ == '__main__':
-    screen = pg.display.set_mode(SCREEN_SIZE)
-    clock = pg.time.Clock()
     settings = Settings()
+    screen = pg.display.set_mode(settings.screen_size)
+    clock = pg.time.Clock()
 
     start_screen(screen)
     main_loop()

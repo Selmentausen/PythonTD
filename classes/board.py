@@ -34,9 +34,8 @@ class Board:
         if 0 <= col < self.columns and 0 <= row < self.rows:
             return row, col
 
-    def add_tower_to_cell(self, tower_class, row, col, replace=False):
+    def add_tower_to_cell(self, tower_class, row, col, replace=False, parent_groups=()):
         if not replace and self.board[row][col]:
             raise CellOccupied
         tower_top_left = (self.cell_x_size * (col + 1), self.cell_y_size * (row + 1))
-        self.board[row][col] = tower_class(tower_top_left, self.cell_x_size, self.cell_y_size,
-                                           self.settings.all_sprites)
+        self.board[row][col] = tower_class(tower_top_left, self.cell_x_size, self.cell_y_size, parent_groups)
