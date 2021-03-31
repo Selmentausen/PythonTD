@@ -1,6 +1,12 @@
 import pygame as pg
 import sys
 
+pg.init()
+screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
+clock = pg.time.Clock()
+all_sprites = pg.sprite.Group()
+
+
 from classes.towers import ArrowTower, BaseTower
 from classes.board import MapBoard, BuyMenuBoard
 from classes.miscellaneous import Button
@@ -8,8 +14,9 @@ from classes.roads import ROAD_SYMBOLS
 from settings import Settings
 from functions import load_level
 
-pg.init()
-all_sprites = pg.sprite.Group()
+
+settings = Settings()
+settings.set_screen_sizes(screen.get_size())
 
 
 def terminate():
@@ -50,13 +57,14 @@ def generate_board_list(level):
             symbol = level[y][x]
             road = ROAD_SYMBOLS.get(symbol, None)
             if road:
-                board_list[y][x] = road()
+                board_list[y][x] = road(all_sprites)
     return board_list
 
 
 def main_loop():
     board_list = generate_board_list(load_level('1.txt'))
     map_board = MapBoard(board_list, settings.map_size, settings)
+    print(all_sprites)
     # buy_menu_board = BuyMenuBoard(3, 10, settings.buy_menu_size, settings, (0, settings.map_size[1]))
     map_board.add_object_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
     # buy_menu_board.add_object_to_cell(Button, 0, 0, parent_groups=[all_sprites])
@@ -83,10 +91,5 @@ def main_loop():
 
 
 if __name__ == '__main__':
-    settings = Settings()
-    screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
-    settings.set_screen_sizes(screen.get_size())
-    clock = pg.time.Clock()
-
     start_screen(screen)
     main_loop()

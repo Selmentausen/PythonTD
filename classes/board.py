@@ -1,6 +1,7 @@
 import pygame as pg
 from exceptions import CellOccupied
 from .towers import BaseTower
+from .roads import BaseRoad
 
 
 class Board:
@@ -13,6 +14,14 @@ class Board:
         self.cols = len(board_list[0])
         self.cell_x_size = int(screen_width / (self.cols + self.offset * 2))
         self.cell_y_size = int(screen_height / (self.rows + self.offset * 2))
+        self._init_roads()
+
+    def _init_roads(self):
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if isinstance(self.board[i][j], BaseRoad):
+                    top_left = self._get_cell_top_left_coordinates(i, j)
+                    self.board[i][j].init_image(top_left, self.cell_x_size, self.cell_y_size)
 
     def get_empty_board(self):
         return [[None] * self.cols for _ in range(self.rows)]
