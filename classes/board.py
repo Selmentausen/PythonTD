@@ -20,10 +20,8 @@ class Board:
     def render(self, screen: pg.Surface):
         for i in range(self.rows):
             for j in range(self.cols):
-                pg.draw.rect(screen, pg.Color('White'),
-                             (self.cell_x_size * (j + 1), self.cell_y_size * (i + 1),
-                              self.cell_x_size, self.cell_y_size),
-                             1)
+                pg.draw.rect(screen, pg.Color('White'), [*self._get_cell_top_left_coordinates(i, j),
+                                                         self.cell_x_size, self.cell_y_size], 1)
 
     def mouse_click_handler(self, event):
         pos = self.get_cell_by_position(event.pos)
@@ -44,14 +42,31 @@ class Board:
         if 0 <= col < self.cols and 0 <= row < self.rows:
             return row, col
 
+    def _get_cell_top_left_coordinates(self, row: int, col: int) -> (int, int):
+        return self.cell_x_size * (col + 1), self.cell_y_size * (row + 1)
 
-class MapBoard(Board):
-    def add_tower_to_cell(self, tower_class, row, col, replace=False, parent_groups=()):
+    def add_object_to_cell(self, obj, row, col, replace=False, parent_groups=()):
         if not replace and self.board[row][col]:
             raise CellOccupied
-        tower_top_left = (self.cell_x_size * (col + 1), self.cell_y_size * (row + 1))
-        self.board[row][col] = tower_class(tower_top_left, self.cell_x_size, self.cell_y_size, parent_groups)
+        object_top_left = self._get_cell_top_left_coordinates(row, col)
+        self.board[row][col] = obj(object_top_left, self.cell_x_size, self.cell_y_size, parent_groups)
+
+
+class MapBoard(Board):
+    pass
 
 
 class BuyMenuBoard(Board):
-    pass
+    def __init__(self, rows, cols, screen_size, settings, board_offset):
+        super(BuyMenuBoard, self).__init__(rows, cols, screen_size, settings)
+        self.board_offset_x, self.board_offset_y = board_offset
+
+    def _get_cell_top_left_coordinates(self, row, col):
+        return self.board_offset_x + self.cell_x_size * (col + 1), self.board_offset_y + self.cell_y_size * (row + 1)
+
+    def get_cell_by_position(self, pos):
+        x, y = pos
+        row = int((y - self.cell_y_size - self.board_offset_y) // self.cell_y_size)
+        col = int((x - self.cell_x_size - self.board_offset_x) // self.cell_x_size)
+        if 0 <= col < self.cols and 0 <= row < self.rows:
+            return row, col

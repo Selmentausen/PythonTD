@@ -41,9 +41,11 @@ def menu(surface):
 
 
 def main_loop():
-    board = MapBoard(6, 10, settings.map_size, settings)
-    board.add_tower_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
-    board.add_tower_to_cell(BaseTower, 3, 5, parent_groups=[all_sprites])
+    map_board = MapBoard(6, 10, settings.map_size, settings)
+    buy_menu_board = BuyMenuBoard(3, 10, settings.buy_menu_size, settings, (0, settings.map_size[1]))
+    map_board.add_object_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
+    map_board.add_object_to_cell(BaseTower, 3, 5, parent_groups=[all_sprites])
+    buy_menu_board.add_object_to_cell(Button, 0, 0, parent_groups=[all_sprites])
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -54,9 +56,14 @@ def main_loop():
                 if event.key == pg.K_m:
                     menu(screen)
             elif event.type == pg.MOUSEBUTTONDOWN:
-                board.mouse_click_handler(event)
+                map_board.mouse_click_handler(event)
+                buy_menu_board.mouse_click_handler(event)
+                pos = buy_menu_board.get_cell_by_position(event.pos)
+                if pos:
+                    print(buy_menu_board.get_object_in_cell(*pos))
         screen.fill(pg.Color('black'))
-        board.render(screen)
+        map_board.render(screen)
+        buy_menu_board.render(screen)
         all_sprites.draw(screen)
         pg.display.flip()
         clock.tick(settings.fps)

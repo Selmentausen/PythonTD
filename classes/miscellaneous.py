@@ -11,4 +11,6 @@ class Button(pg.sprite.Sprite):
         self.image = pg.transform.scale(load_image('button.jpg', colorkey=-1), (width, height))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
-        print(self.rect)
+
+    def clicked(self):
+        print('you clicked this button')
