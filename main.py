@@ -1,8 +1,8 @@
 import pygame as pg
 import sys
 
-from classes.towers import ArrowTower
-from classes.board import Board
+from classes.towers import ArrowTower, BaseTower
+from classes.board import MapBoard, BuyMenuBoard
 from classes.miscellaneous import Button
 from settings import Settings
 
@@ -41,8 +41,9 @@ def menu(surface):
 
 
 def main_loop():
-    board = Board(6, 6, settings.map_size, settings)
+    board = MapBoard(6, 10, settings.map_size, settings)
     board.add_tower_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
+    board.add_tower_to_cell(BaseTower, 3, 5, parent_groups=[all_sprites])
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -53,9 +54,7 @@ def main_loop():
                 if event.key == pg.K_m:
                     menu(screen)
             elif event.type == pg.MOUSEBUTTONDOWN:
-                coords = board.get_cell_by_position(event.pos)
-                if coords:
-                    print(board.get_object_in_cell(*coords))
+                board.mouse_click_handler(event)
         screen.fill(pg.Color('black'))
         board.render(screen)
         all_sprites.draw(screen)

@@ -5,7 +5,10 @@ import pygame as pg
 class BaseTower(pg.sprite.Sprite):
     def __init__(self, top_left, width, height, groups=()):
         super(BaseTower, self).__init__(*groups)
-        self.rect = pg.Rect(top_left, (width, height))
+        image = load_image('ArrowTower.png')
+        self.image = pg.transform.scale(image, (width, height))
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = top_left
 
 
 class ArrowTower(BaseTower):
@@ -15,3 +18,6 @@ class ArrowTower(BaseTower):
         self.image = pg.transform.scale(image, (width, height))
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
+
+    def clicked(self):
+        print('clicked Arrow tower')
