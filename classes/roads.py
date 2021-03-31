@@ -1,15 +1,25 @@
 import pygame as pg
+from functions import load_image
 
 
 class BaseRoad(pg.sprite.Sprite):
+    def __init__(self, parent_groups=()):
+        super(BaseRoad, self).__init__(parent_groups)
+
+
+class EnemySpawn(BaseRoad):
     pass
 
 
-class RightRoad(BaseRoad):
+class EnemyDestination(BaseRoad):
     pass
 
 
-class UpRightRoad(BaseRoad):
+class RightLeftRoad(BaseRoad):
+    pass
+
+
+class UpDownRoad(BaseRoad):
     pass
 
 
@@ -17,7 +27,11 @@ class DownRightRoad(BaseRoad):
     pass
 
 
-class LeftRoad(BaseRoad):
+class DownLeftRoad(BaseRoad):
+    pass
+
+
+class UpRightRoad(BaseRoad):
     pass
 
 
@@ -25,47 +39,10 @@ class UpLeftRoad(BaseRoad):
     pass
 
 
-class DownLeftRoad(BaseRoad):
-    pass
-
-
-class UpRoad(BaseRoad):
-    pass
-
-
-class RightUpRoad(BaseRoad):
-    pass
-
-
-class LeftUpRoad(BaseRoad):
-    pass
-
-
-class DownRoad(BaseRoad):
-    pass
-
-
-class RightDownRoad(BaseRoad):
-    pass
-
-
-class LeftDownRoad(BaseRoad):
-    pass
-
-
-class EnemySpawn(pg.sprite.Sprite):
-    pass
-
-
-class EnemyDestination(pg.sprite.Sprite):
-    pass
-
-
 ROAD_SYMBOLS = {
     'S': EnemySpawn,
     'X': EnemyDestination,
-    '>': RightRoad, 'R': UpRightRoad, 'r': DownRightRoad,
-    '<': LeftRoad, 'L': UpLeftRoad, 'l': DownLeftRoad,
-    '^': UpRoad, 'U': RightUpRoad, 'u': LeftUpRoad,
-    '|': RightRoad, 'D': RightDownRoad, 'd': LeftDownRoad
+    '-': RightLeftRoad, '|': UpDownRoad,
+    'r': UpRightRoad, '\\': UpLeftRoad,
+    'L': DownRightRoad, '/': DownLeftRoad
 }
