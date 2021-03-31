@@ -4,15 +4,15 @@ from .towers import BaseTower
 
 
 class Board:
-    def __init__(self, rows, cols, screen_size, settings):
+    def __init__(self, board_list, screen_size, settings):
         screen_width, screen_height = screen_size
         self.settings = settings
         self.offset = 1
-        self.rows = rows
-        self.cols = cols
+        self.board = board_list
+        self.rows = len(board_list)
+        self.cols = len(board_list[0])
         self.cell_x_size = int(screen_width / (self.cols + self.offset * 2))
         self.cell_y_size = int(screen_height / (self.rows + self.offset * 2))
-        self.board = self.get_empty_board()
 
     def get_empty_board(self):
         return [[None] * self.cols for _ in range(self.rows)]
