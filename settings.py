@@ -1,6 +1,3 @@
-import pygame as pg
-
-
 class Settings:
     def __init__(self):
         self.screen_size = self.screen_width, self.screen_height = (0, 0)

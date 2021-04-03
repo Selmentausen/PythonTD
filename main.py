@@ -6,14 +6,12 @@ screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
 clock = pg.time.Clock()
 all_sprites = pg.sprite.Group()
 
-
-from classes.towers import ArrowTower, BaseTower
+from classes.towers import ArrowTower
 from classes.board import MapBoard, BuyMenuBoard
-from classes.miscellaneous import Button
+# from classes.miscellaneous import Button
 from classes.roads import ROAD_SYMBOLS
 from settings import Settings
 from functions import load_level
-
 
 settings = Settings()
 settings.set_screen_sizes(screen.get_size())
@@ -49,7 +47,7 @@ def menu(surface):
         pg.display.flip()
 
 
-def generate_board_list(level):
+def generate_map_board_list(level):
     rows, cols = len(level), len(level[0])
     board_list = [[None for _ in range(cols)] for _ in range(rows)]
     for y in range(rows):
@@ -61,10 +59,16 @@ def generate_board_list(level):
     return board_list
 
 
+def generate_buy_menu_board_list():
+    board_list = []
+    for i in range(3):
+        pass
+
+
 def main_loop():
-    board_list = generate_board_list(load_level('1.txt'))
+    board_list = generate_map_board_list(load_level('1.txt'))
     map_board = MapBoard(board_list, settings.map_size, settings)
-    # buy_menu_board = BuyMenuBoard(3, 10, settings.buy_menu_size, settings, (0, settings.map_size[1]))
+    buy_menu_board = BuyMenuBoard([], settings.buy_menu_size, settings, (0, settings.map_size[1]))
     map_board.add_object_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
     # buy_menu_board.add_object_to_cell(Button, 0, 0, parent_groups=[all_sprites])
     while True:

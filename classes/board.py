@@ -1,6 +1,5 @@
 import pygame as pg
 from exceptions import CellOccupied
-from .towers import BaseTower
 from .roads import BaseRoad
 
 
@@ -11,7 +10,7 @@ class Board:
         self.offset = 1
         self.board = board_list
         self.rows = len(board_list)
-        self.cols = len(board_list[0])
+        self.cols = len(board_list[0]) if board_list else 0
         self.cell_x_size = int(screen_width / (self.cols + self.offset * 2))
         self.cell_y_size = int(screen_height / (self.rows + self.offset * 2))
 
