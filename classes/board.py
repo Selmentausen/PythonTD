@@ -14,14 +14,6 @@ class Board:
         self.cols = len(board_list[0])
         self.cell_x_size = int(screen_width / (self.cols + self.offset * 2))
         self.cell_y_size = int(screen_height / (self.rows + self.offset * 2))
-        self._init_roads()
-
-    def _init_roads(self):
-        for i in range(self.rows):
-            for j in range(self.cols):
-                if isinstance(self.board[i][j], BaseRoad):
-                    top_left = self._get_cell_top_left_coordinates(i, j)
-                    self.board[i][j].init_image(top_left, self.cell_x_size, self.cell_y_size)
 
     def get_empty_board(self):
         return [[None] * self.cols for _ in range(self.rows)]
@@ -62,12 +54,21 @@ class Board:
 
 
 class MapBoard(Board):
-    pass
+    def __init__(self, board_list, screen_size, settings):
+        super(MapBoard, self).__init__(board_list, screen_size, settings)
+        self._init_roads()
+
+    def _init_roads(self):
+        for i in range(self.rows):
+            for j in range(self.cols):
+                if isinstance(self.board[i][j], BaseRoad):
+                    top_left = self._get_cell_top_left_coordinates(i, j)
+                    self.board[i][j].init_image(top_left, self.cell_x_size, self.cell_y_size)
 
 
 class BuyMenuBoard(Board):
-    def __init__(self, rows, cols, screen_size, settings, board_offset):
-        super(BuyMenuBoard, self).__init__(rows, cols, screen_size, settings)
+    def __init__(self, board_list, screen_size, settings, board_offset):
+        super(BuyMenuBoard, self).__init__(board_list, screen_size, settings)
         self.board_offset_x, self.board_offset_y = board_offset
 
     def _get_cell_top_left_coordinates(self, row, col):

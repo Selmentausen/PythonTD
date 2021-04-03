@@ -4,7 +4,7 @@ import pygame
 
 
 def load_image(name, colorkey=None):
-    fullname = os.path.join('data/img', name)
+    fullname = os.path.join('data', 'img', name)
     if not os.path.isfile(fullname):
         print(f"Файл с изображением '{fullname}' не найден")
         sys.exit()
@@ -20,7 +20,7 @@ def load_image(name, colorkey=None):
 
 
 def load_level(name):
-    name = os.path.join('data/maps', name)
-    with open(name, 'r') as f:
+    fullname = os.path.join('data', 'maps', name)
+    with open(fullname, 'r') as f:
         level_map = [line.strip() for line in f]
     return level_map

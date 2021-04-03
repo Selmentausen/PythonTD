@@ -64,7 +64,6 @@ def generate_board_list(level):
 def main_loop():
     board_list = generate_board_list(load_level('1.txt'))
     map_board = MapBoard(board_list, settings.map_size, settings)
-    print(all_sprites)
     # buy_menu_board = BuyMenuBoard(3, 10, settings.buy_menu_size, settings, (0, settings.map_size[1]))
     map_board.add_object_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
     # buy_menu_board.add_object_to_cell(Button, 0, 0, parent_groups=[all_sprites])
