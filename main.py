@@ -14,11 +14,15 @@ from classes.miscellaneous import Button
 from classes.roads import ROAD_SYMBOLS
 from classes import enemies
 from settings import Settings
-from functions import load_level
+from functions import load_level, load_image
+from random import choice
 
 settings = Settings()
 settings.set_screen_sizes(screen.get_size())
 ENEMY_SPAWN_EVENT = pg.USEREVENT + 10
+
+BACKGROUND_IMAGES = [load_image(f'background/bg{i}.png') for i in range(1, 8)] + [
+    load_image('background/bg_blank.png')] * 50
 
 
 def terminate():
@@ -82,6 +86,15 @@ def generate_buy_menu_board_list():
         pass
 
 
+def create_background_surface(screen_size):
+    surface = pg.Surface(screen_size)
+    size_x = size_y = 16
+    for i in range(screen_size[0] // 16):
+        for j in range(screen_size[1] // 16):
+            surface.blit(choice(BACKGROUND_IMAGES), (size_x * i, size_y * j))
+    return surface
+
+
 def main_loop():
     delta_time = clock.tick() / 1000
     pg.time.set_timer(ENEMY_SPAWN_EVENT, 700)
@@ -90,6 +103,7 @@ def main_loop():
     all_waves = generate_enemy_waves(load_level('1.txt'))
     current_wave = all_waves.pop(0)
     wave_start = False
+    background_surface = create_background_surface(screen.get_size())
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -113,6 +127,7 @@ def main_loop():
                     current_wave = all_waves.pop(0)
                     wave_start = False
         screen.fill(pg.Color('black'))
+        screen.blit(background_surface, (0, 0))
         map_board.render(screen)
         enemy_sprites.update(delta_time)
         all_sprites.draw(screen)

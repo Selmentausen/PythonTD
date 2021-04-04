@@ -1,11 +1,14 @@
 import pygame as pg
 from exceptions import CellOccupied
 from .roads import BaseRoad, EnemySpawn, EnemyDestination
+from functions import load_image
+from random import choice
 
 
 class Board:
     def __init__(self, board_list, screen_size, settings):
         screen_width, screen_height = screen_size
+        self.screen_size = screen_size
         self.settings = settings
         self.offset = 1
         self.board = board_list
