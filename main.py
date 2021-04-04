@@ -3,7 +3,7 @@ import sys
 from random import randrange
 
 pg.init()
-screen = pg.display.set_mode((800, 600))
+screen = pg.display.set_mode((1024, 768))
 clock = pg.time.Clock()
 all_sprites = pg.sprite.Group()
 enemy_sprites = pg.sprite.Group()
@@ -84,7 +84,7 @@ def generate_buy_menu_board_list():
 
 def main_loop():
     delta_time = clock.tick() / 1000
-    pg.time.set_timer(ENEMY_SPAWN_EVENT, 100)
+    pg.time.set_timer(ENEMY_SPAWN_EVENT, 700)
     board_list = generate_map_board_list(load_level('1.txt'))
     map_board = MapBoard(board_list, settings.map_size, settings)
     all_waves = generate_enemy_waves(load_level('1.txt'))

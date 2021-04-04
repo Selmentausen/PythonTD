@@ -58,7 +58,7 @@ class EnemyBase(pg.sprite.Sprite):
         if not isinstance(road, roads.BaseRoad):
             self.kill()
         elif isinstance(road, roads.EnemyDestination):
-            pass
+            self.kill()
         else:
             road_name = road.__class__.__name__
             x_dir, y_dir = ROAD_DIRECTIONS[road_name]
@@ -99,7 +99,7 @@ class SquareEnemy(EnemyBase):
     def __init__(self, *args, **kwargs):
         super(SquareEnemy, self).__init__(*args, **kwargs)
         self.image = ENEMY_IMAGES['square_enemy']
-        self.image.set_alpha(180)
+        self.image.set_alpha(210)
         self.hp *= self.settings.square_enemy_hp_multiplier
         self.speed *= self.settings.square_enemy_speed_multiplier
         self.set_start_pos()

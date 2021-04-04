@@ -1,13 +1,16 @@
 import pygame as pg
 from functions import load_image
+from random import choice
 
 ROAD_IMAGES = {
     'spawn': load_image('roads/start_road.png'),
     'end': load_image('roads/end_road.png'),
     'down_left': load_image('roads/down_left_road.png'),
     'down_right': load_image('roads/down_right_road.png'),
-    'right_left': load_image('roads/right_left_road.png'),
-    'up_down': load_image('roads/up_down_road.png'),
+    'right_left': (load_image('roads/right_left_road.png'), load_image('roads/right_left_road_2.png'),
+                   load_image('roads/right_left_road_3.png')),
+    'up_down': (load_image('roads/up_down_road.png'), load_image('roads/up_down_road_2.png'),
+                load_image('roads/up_down_road_3.png')),
     'up_left': load_image('roads/up_left_road.png'),
     'up_right': load_image('roads/up_right_road.png')
 }
@@ -38,25 +41,25 @@ class EnemyDestination(BaseRoad):
 class RightRoad(BaseRoad):
     def __init__(self, parent_groups):
         super(RightRoad, self).__init__(parent_groups)
-        self.image = ROAD_IMAGES['right_left']
+        self.image = choice(ROAD_IMAGES['right_left'])
 
 
 class LeftRoad(BaseRoad):
     def __init__(self, parent_groups):
         super(LeftRoad, self).__init__(parent_groups)
-        self.image = ROAD_IMAGES['right_left']
+        self.image = choice(ROAD_IMAGES['right_left'])
 
 
 class UpRoad(BaseRoad):
     def __init__(self, parent_groups=()):
         super(UpRoad, self).__init__(parent_groups)
-        self.image = ROAD_IMAGES['up_down']
+        self.image = choice(ROAD_IMAGES['up_down'])
 
 
 class DownRoad(BaseRoad):
     def __init__(self, parent_groups=()):
         super(DownRoad, self).__init__(parent_groups)
-        self.image = ROAD_IMAGES['up_down']
+        self.image = choice(ROAD_IMAGES['up_down'])
 
 
 class DownRightRoad(BaseRoad):
