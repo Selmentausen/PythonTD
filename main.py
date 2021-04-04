@@ -82,19 +82,14 @@ def generate_buy_menu_board_list():
         pass
 
 
-def get_wave_generator(wave):
-    for enemy in wave:
-        yield enemy
-
-
 def main_loop():
     delta_time = clock.tick() / 1000
-    pg.time.set_timer(ENEMY_SPAWN_EVENT, 1000)
+    pg.time.set_timer(ENEMY_SPAWN_EVENT, 100)
     board_list = generate_map_board_list(load_level('1.txt'))
     map_board = MapBoard(board_list, settings.map_size, settings)
-    map_board.add_object_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
     all_waves = generate_enemy_waves(load_level('1.txt'))
-    current_wave = get_wave_generator(all_waves[0])
+    current_wave = all_waves.pop(0)
+    wave_start = False
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -106,15 +101,17 @@ def main_loop():
                     menu(screen)
                 if event.key == pg.K_f:
                     pg.display.toggle_fullscreen()
+                if event.key == pg.K_p:
+                    wave_start = True
             elif event.type == pg.MOUSEBUTTONDOWN:
                 map_board.mouse_click_handler(event)
             elif event.type == ENEMY_SPAWN_EVENT:
-                if current_wave:
-                    try:
-                        enemy = current_wave.__next__()
-                        enemy(10, 10, 1, settings, map_board, enemy_sprites)
-                    except StopIteration:
-                        current_wave = None
+                if current_wave and wave_start:
+                    enemy = current_wave.pop(0)
+                    enemy(30, 30, 1, settings, map_board, enemy_sprites)
+                elif all_waves and not current_wave:
+                    current_wave = all_waves.pop(0)
+                    wave_start = False
         screen.fill(pg.Color('black'))
         map_board.render(screen)
         enemy_sprites.update(delta_time)
