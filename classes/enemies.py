@@ -1,11 +1,12 @@
 import pygame as pg
 from functions import load_image
+from random import uniform
 import classes.roads as roads
 
 ENEMY_IMAGES = {
     'placeholder_enemy': load_image('enemies/enemy_placeholder.png'),
     'square_enemy': load_image('enemies/enemy_square.png'),
-    'triangle_enemy': load_image('enemies/enemy_triangle.png'),
+    'circle_enemy': load_image('enemies/enemy_circle.png'),
     'rhombus_enemy': load_image('enemies/enemy_rhombus.png')
 }
 
@@ -62,26 +63,32 @@ class EnemyBase(pg.sprite.Sprite):
             road_name = road.__class__.__name__
             x_dir, y_dir = ROAD_DIRECTIONS[road_name]
             move = 0, 0
+            jiggle = uniform(-self.speed * self.settings.jiggle_intensity,
+                             self.speed * self.settings.jiggle_intensity)
             if road_name in ['LeftDownRoad', 'LeftUpRoad']:
                 if self.rect.center[0] > cell_x_center:
-                    move = self.speed * x_dir, 0
+                    move = self.speed * x_dir, jiggle
                 else:
-                    move = 0, self.speed * y_dir
+                    move = jiggle, self.speed * y_dir
             elif road_name in ['RightDownRoad', 'RightUpRoad']:
                 if self.rect.center[0] < cell_x_center:
-                    move = self.speed * x_dir, 0
+                    move = self.speed * x_dir, jiggle
                 else:
-                    move = 0, self.speed * y_dir
+                    move = jiggle, self.speed * y_dir
             elif road_name in ['UpRightRoad', 'UpLeftRoad']:
                 if self.rect.center[1] > cell_y_center:
-                    move = 0, self.speed * y_dir
+                    move = jiggle, self.speed * y_dir
                 else:
-                    move = self.speed * x_dir, 0
+                    move = self.speed * x_dir, jiggle
             elif road_name in ['DownRightRoad', 'DownLeftRoad']:
                 if self.rect.center[1] < cell_y_center:
-                    move = 0, self.speed * y_dir
+                    move = jiggle, self.speed * y_dir
                 else:
-                    move = self.speed * x_dir, 0
+                    move = self.speed * x_dir, jiggle
+            elif road_name in ['RightRoad', 'LeftRoad']:
+                move = self.speed * x_dir, jiggle
+            elif road_name in ['UpRoad', 'DownRoad']:
+                move = jiggle, self.speed * y_dir
             else:
                 move = self.speed * x_dir, self.speed * y_dir
             move = [c * delta_time for c in move]
@@ -93,17 +100,19 @@ class SquareEnemy(EnemyBase):
     def __init__(self, *args, **kwargs):
         super(SquareEnemy, self).__init__(*args, **kwargs)
         self.image = ENEMY_IMAGES['square_enemy']
+        self.image.set_alpha(180)
         self.hp *= self.settings.square_enemy_hp_multiplier
         self.speed *= self.settings.square_enemy_speed_multiplier
         self.set_start_pos()
 
 
-class TriangleEnemy(EnemyBase):
+class CircleEnemy(EnemyBase):
     def __init__(self, *args, **kwargs):
-        super(TriangleEnemy, self).__init__(*args, **kwargs)
-        self.image = ENEMY_IMAGES['triangle_enemy']
-        self.hp *= self.settings.triangle_enemy_hp_multiplier
-        self.speed *= self.settings.triangle_enemy_speed_multiplier
+        super(CircleEnemy, self).__init__(*args, **kwargs)
+        self.image = ENEMY_IMAGES['circle_enemy']
+        self.image.set_alpha(180)
+        self.hp *= self.settings.circle_enemy_hp_multiplier
+        self.speed *= self.settings.circle_enemy_speed_multiplier
         self.set_start_pos()
 
 
@@ -111,6 +120,7 @@ class RhombusEnemy(EnemyBase):
     def __init__(self, *args, **kwargs):
         super(RhombusEnemy, self).__init__(*args, **kwargs)
         self.image = ENEMY_IMAGES['rhombus_enemy']
+        self.image.set_alpha(180)
         self.hp *= self.settings.rhombus_enemy_hp_multiplier
         self.speed *= self.settings.rhombus_enemy_speed_multiplier
         self.set_start_pos()

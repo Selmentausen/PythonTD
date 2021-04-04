@@ -1,5 +1,6 @@
 import pygame as pg
 import sys
+from random import randrange
 
 pg.init()
 screen = pg.display.set_mode((800, 600))
@@ -74,9 +75,11 @@ def main_loop():
     map_board = MapBoard(board_list, settings.map_size, settings)
     buy_menu_board = BuyMenuBoard([], settings.buy_menu_size, settings, (0, settings.map_size[1]))
     map_board.add_object_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
-    enemies.RhombusEnemy(10, 10, 1, settings, map_board, enemy_sprites)
-    enemies.TriangleEnemy(10, 10, 1, settings, map_board, enemy_sprites)
-    enemies.SquareEnemy(10, 10, 1, settings, map_board, enemy_sprites)
+    enemies.RhombusEnemy(10, 30, 1, settings, map_board, enemy_sprites)
+    enemies.CircleEnemy(10, 30, 1, settings, map_board, enemy_sprites)
+    enemies.CircleEnemy(10, 30, 1, settings, map_board, enemy_sprites)
+    enemies.CircleEnemy(10, 30, 1, settings, map_board, enemy_sprites)
+    enemies.SquareEnemy(10, 30, 1, settings, map_board, enemy_sprites)
     # buy_menu_board.add_object_to_cell(Button, 0, 0, parent_groups=[all_sprites])
     while True:
         print(delta_time)
