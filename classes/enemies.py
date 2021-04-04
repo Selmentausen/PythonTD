@@ -62,7 +62,6 @@ class EnemyBase(pg.sprite.Sprite):
         else:
             road_name = road.__class__.__name__
             x_dir, y_dir = ROAD_DIRECTIONS[road_name]
-            move = 0, 0
             jiggle = uniform(-self.speed * self.settings.jiggle_intensity,
                              self.speed * self.settings.jiggle_intensity)
             if road_name in ['LeftDownRoad', 'LeftUpRoad']:
@@ -124,3 +123,10 @@ class RhombusEnemy(EnemyBase):
         self.hp *= self.settings.rhombus_enemy_hp_multiplier
         self.speed *= self.settings.rhombus_enemy_speed_multiplier
         self.set_start_pos()
+
+
+ENEMY_SYMBOLS = {
+    'R': RhombusEnemy,
+    'S': SquareEnemy,
+    'C': CircleEnemy
+}
