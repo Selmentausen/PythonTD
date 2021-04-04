@@ -35,15 +35,27 @@ class EnemyDestination(BaseRoad):
         self.image = ROAD_IMAGES['end']
 
 
-class RightLeftRoad(BaseRoad):
+class RightRoad(BaseRoad):
     def __init__(self, parent_groups):
-        super(RightLeftRoad, self).__init__(parent_groups)
+        super(RightRoad, self).__init__(parent_groups)
         self.image = ROAD_IMAGES['right_left']
 
 
-class UpDownRoad(BaseRoad):
+class LeftRoad(BaseRoad):
+    def __init__(self, parent_groups):
+        super(LeftRoad, self).__init__(parent_groups)
+        self.image = ROAD_IMAGES['right_left']
+
+
+class UpRoad(BaseRoad):
     def __init__(self, parent_groups=()):
-        super(UpDownRoad, self).__init__(parent_groups)
+        super(UpRoad, self).__init__(parent_groups)
+        self.image = ROAD_IMAGES['up_down']
+
+
+class DownRoad(BaseRoad):
+    def __init__(self, parent_groups=()):
+        super(DownRoad, self).__init__(parent_groups)
         self.image = ROAD_IMAGES['up_down']
 
 
@@ -53,9 +65,21 @@ class DownRightRoad(BaseRoad):
         self.image = ROAD_IMAGES['down_right']
 
 
+class LeftUpRoad(BaseRoad):
+    def __init__(self, parent_groups=()):
+        super(LeftUpRoad, self).__init__(parent_groups)
+        self.image = ROAD_IMAGES['down_right']
+
+
 class DownLeftRoad(BaseRoad):
     def __init__(self, parent_groups=()):
         super(DownLeftRoad, self).__init__(parent_groups)
+        self.image = ROAD_IMAGES['down_left']
+
+
+class RightUpRoad(BaseRoad):
+    def __init__(self, parent_groups=()):
+        super(RightUpRoad, self).__init__(parent_groups)
         self.image = ROAD_IMAGES['down_left']
 
 
@@ -65,16 +89,31 @@ class UpRightRoad(BaseRoad):
         self.image = ROAD_IMAGES['up_right']
 
 
+class LeftDownRoad(BaseRoad):
+    def __init__(self, parent_groups=()):
+        super(LeftDownRoad, self).__init__(parent_groups)
+        self.image = ROAD_IMAGES['up_right']
+
+
 class UpLeftRoad(BaseRoad):
     def __init__(self, parent_groups=()):
         super(UpLeftRoad, self).__init__(parent_groups)
         self.image = ROAD_IMAGES['up_left']
 
 
+class RightDownRoad(BaseRoad):
+    def __init__(self, parent_groups=()):
+        super(RightDownRoad, self).__init__(parent_groups)
+        self.image = ROAD_IMAGES['up_left']
+
+
 ROAD_SYMBOLS = {
     'S': EnemySpawn,
     'X': EnemyDestination,
-    '-': RightLeftRoad, '|': UpDownRoad,
-    'r': UpRightRoad, '\\': UpLeftRoad,
-    'L': DownRightRoad, '/': DownLeftRoad
+    '>': RightRoad, '<': LeftRoad,
+    '^': UpRoad, '|': DownRoad,
+    'r': UpRightRoad, 'R': LeftDownRoad,
+    '\\': UpLeftRoad, '*': RightDownRoad,
+    'L': DownRightRoad, 'l': LeftUpRoad,
+    '/': DownLeftRoad, '+': RightUpRoad
 }

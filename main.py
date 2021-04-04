@@ -2,9 +2,10 @@ import pygame as pg
 import sys
 
 pg.init()
-screen = pg.display.set_mode((0, 0), pg.FULLSCREEN)
+screen = pg.display.set_mode((800, 600))
 clock = pg.time.Clock()
 all_sprites = pg.sprite.Group()
+enemy_sprites = pg.sprite.Group()
 
 from classes.towers import ArrowTower
 from classes.board import MapBoard, BuyMenuBoard
@@ -67,13 +68,18 @@ def generate_buy_menu_board_list():
 
 
 def main_loop():
+    delta_time = clock.tick() / 1000
+
     board_list = generate_map_board_list(load_level('1.txt'))
     map_board = MapBoard(board_list, settings.map_size, settings)
     buy_menu_board = BuyMenuBoard([], settings.buy_menu_size, settings, (0, settings.map_size[1]))
     map_board.add_object_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
-    enemy = enemies.RhombusEnemy(10, 10, 1, settings, map_board, all_sprites)
+    enemies.RhombusEnemy(10, 10, 1, settings, map_board, enemy_sprites)
+    enemies.TriangleEnemy(10, 10, 1, settings, map_board, enemy_sprites)
+    enemies.SquareEnemy(10, 10, 1, settings, map_board, enemy_sprites)
     # buy_menu_board.add_object_to_cell(Button, 0, 0, parent_groups=[all_sprites])
     while True:
+        print(delta_time)
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 terminate()
@@ -90,9 +96,11 @@ def main_loop():
         screen.fill(pg.Color('black'))
         map_board.render(screen)
         # buy_menu_board.render(screen)
+        enemy_sprites.update(delta_time)
         all_sprites.draw(screen)
+        enemy_sprites.draw(screen)
         pg.display.flip()
-        clock.tick(settings.fps)
+        delta_time = clock.tick(60) / 1000
 
 
 if __name__ == '__main__':

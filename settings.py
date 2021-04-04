@@ -3,7 +3,7 @@ class Settings:
         self.screen_size = self.screen_width, self.screen_height = (0, 0)
         self.buy_menu_size = (0, 0)
         self.map_size = (0, 0)
-        self.fps = 60
+        self.fps = 30
 
         # Enemy settings
         self.square_enemy_hp_multiplier = 1.5
