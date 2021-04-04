@@ -8,8 +8,9 @@ all_sprites = pg.sprite.Group()
 
 from classes.towers import ArrowTower
 from classes.board import MapBoard, BuyMenuBoard
-# from classes.miscellaneous import Button
+from classes.miscellaneous import Button
 from classes.roads import ROAD_SYMBOLS
+from classes import enemies
 from settings import Settings
 from functions import load_level
 
@@ -70,6 +71,7 @@ def main_loop():
     map_board = MapBoard(board_list, settings.map_size, settings)
     buy_menu_board = BuyMenuBoard([], settings.buy_menu_size, settings, (0, settings.map_size[1]))
     map_board.add_object_to_cell(ArrowTower, 0, 0, parent_groups=[all_sprites])
+    enemy = enemies.RhombusEnemy(10, 10, 1, settings, map_board, all_sprites)
     # buy_menu_board.add_object_to_cell(Button, 0, 0, parent_groups=[all_sprites])
     while True:
         for event in pg.event.get():
