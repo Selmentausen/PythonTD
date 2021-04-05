@@ -34,6 +34,7 @@ def start_screen(surface):
                 running = False
         surface.fill(pg.Color('Red'))
         pg.display.flip()
+        clock.tick()
 
 
 def menu(surface):
@@ -47,6 +48,7 @@ def menu(surface):
                     running = False
         surface.fill(pg.Color('Blue'))
         pg.display.flip()
+        clock.tick()
 
 
 def main_loop():
@@ -64,6 +66,7 @@ def main_loop():
     background_surface = create_background_surface(screen.get_size())
 
     map_board.add_object_to_cell(towers.ArrowTower, 2, 2)
+    map_board.add_object_to_cell(towers.ArrowTower, 2, 4)
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -95,6 +98,7 @@ def main_loop():
         settings.tower_sprites.update(delta_time, screen)
         settings.enemy_sprites.update(delta_time)
         settings.bullet_sprites.update(delta_time)
+        print(delta_time)
 
         pg.display.flip()
         delta_time = clock.tick(60) / 1000
