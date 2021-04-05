@@ -94,8 +94,8 @@ class EnemyBase(pg.sprite.Sprite):
             self.x += move[0]
             self.y += move[1]
 
-    def get_damage(self, dmg):
-        self.hp -= dmg
+    def hit(self, damage):
+        self.hp -= damage
         if self.hp <= 0:
             self.kill()
 

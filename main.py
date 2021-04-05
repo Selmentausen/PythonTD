@@ -131,7 +131,7 @@ def main_loop():
             elif event.type == ENEMY_SPAWN_EVENT:
                 if current_wave and wave_start:
                     enemy = current_wave.pop(0)
-                    enemy(30, 30, 1, settings, map_board, enemy_sprites)
+                    enemy(30, 100, 1, settings, map_board, enemy_sprites)
                 elif all_waves and not current_wave:
                     current_wave = all_waves.pop(0)
                     wave_start = False
@@ -139,7 +139,7 @@ def main_loop():
                 tower_sprites.update(enemy_sprites)
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))
-        map_board.render(screen)
+        # map_board.render(screen)
         enemy_sprites.update(delta_time)
         all_sprites.draw(screen)
         enemy_sprites.draw(screen)

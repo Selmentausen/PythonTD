@@ -1,9 +1,15 @@
 from functions import load_image
 import pygame as pg
 from math import hypot
+from .enemies import EnemyBase
 
 TOWER_IMAGES = {
     'ArrowTower': load_image('towers/ArrowTower.png')
+}
+
+BULLET_IMAGES = {
+    'normal_bullet': load_image('towers/normal_bullet.png'),
+    'big_bullet': load_image('towers/big_bullet.png')
 }
 
 
@@ -17,6 +23,21 @@ class BaseTower(pg.sprite.Sprite):
 
         self.x, self.y = top_left
         self.tower_range = 0
+        self.damage = 0
+        self.hit_order = 'first'
+
+    def update(self, enemies) -> None:
+        self.hit_objects_in_range(enemies)
+
+    def hit_objects_in_range(self, group: pg.sprite.Group):
+        if group:
+            if self.hit_order == 'first':
+                enemy = group.sprites()[0]
+            elif self.hit_order == 'last':
+                enemy = group.sprites()[-1]
+            else:
+                enemy = min(group, key=lambda obj: abs(hypot(self.x, self.y) - hypot(obj.x, obj.y)))
+            enemy.hit(self.damage)
 
     def clicked(self):
         print('clicked A Tower')
@@ -32,15 +53,6 @@ class ArrowTower(BaseTower):
 
         self.range = settings.arrow_tower_range
         self.damage = settings.arrow_tower_damage
-
-    def update(self, *args, **kwargs) -> None:
-        self.get_objects_in_range(args[0])
-
-    def get_objects_in_range(self, group):
-        for obj in group:
-            distance = abs(hypot(self.x, self.y) - hypot(obj.x, obj.y))
-            if distance <= self.range:
-                print(f'hit enemy {obj.__class__.__name__}')
 
     def clicked(self):
         print('clicked Arrow tower')
