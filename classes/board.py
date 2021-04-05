@@ -52,7 +52,7 @@ class Board:
         if not replace and self.board[row][col]:
             raise CellOccupied
         object_top_left = self.get_cell_top_left_coordinates(row, col)
-        self.board[row][col] = obj(object_top_left, self.cell_x_size, self.cell_y_size, parent_groups)
+        self.board[row][col] = obj(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size), parent_groups)
 
 
 class MapBoard(Board):

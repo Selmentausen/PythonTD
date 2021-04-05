@@ -14,6 +14,10 @@ class Settings:
         self.rhombus_enemy_speed_multiplier = 1
         self.jiggle_intensity = 0.3
 
+        # Tower settings
+        self.arrow_tower_range = 100
+        self.arrow_tower_damage = 100
+
     def set_screen_sizes(self, screen_size):
         self.screen_size = screen_size
         self.map_size = (screen_size[0], screen_size[1] * 0.75)
