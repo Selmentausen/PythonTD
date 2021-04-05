@@ -17,8 +17,8 @@ ROAD_IMAGES = {
 
 
 class BaseRoad(pg.sprite.Sprite):
-    def __init__(self, *parent_groups):
-        super(BaseRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(BaseRoad, self).__init__(settings.all_sprites, settings.road_sprites)
 
     def init_image(self, top_left, width, height):
         self.image = pg.transform.scale(self.image, (width, height))
@@ -27,86 +27,86 @@ class BaseRoad(pg.sprite.Sprite):
 
 
 class EnemySpawn(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(EnemySpawn, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(EnemySpawn, self).__init__(settings)
         self.image = ROAD_IMAGES['spawn']
 
 
 class EnemyDestination(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(EnemyDestination, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(EnemyDestination, self).__init__(settings)
         self.image = ROAD_IMAGES['end']
 
 
 class RightRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(RightRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(RightRoad, self).__init__(settings)
         self.image = choice(ROAD_IMAGES['right_left'])
 
 
 class LeftRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(LeftRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(LeftRoad, self).__init__(settings)
         self.image = choice(ROAD_IMAGES['right_left'])
 
 
 class UpRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(UpRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(UpRoad, self).__init__(settings)
         self.image = choice(ROAD_IMAGES['up_down'])
 
 
 class DownRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(DownRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(DownRoad, self).__init__(settings)
         self.image = choice(ROAD_IMAGES['up_down'])
 
 
 class DownRightRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(DownRightRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(DownRightRoad, self).__init__(settings)
         self.image = ROAD_IMAGES['down_right']
 
 
 class LeftUpRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(LeftUpRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(LeftUpRoad, self).__init__(settings)
         self.image = ROAD_IMAGES['down_right']
 
 
 class DownLeftRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(DownLeftRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(DownLeftRoad, self).__init__(settings)
         self.image = ROAD_IMAGES['down_left']
 
 
 class RightUpRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(RightUpRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(RightUpRoad, self).__init__(settings)
         self.image = ROAD_IMAGES['down_left']
 
 
 class UpRightRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(UpRightRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(UpRightRoad, self).__init__(settings)
         self.image = ROAD_IMAGES['up_right']
 
 
 class LeftDownRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(LeftDownRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(LeftDownRoad, self).__init__(settings)
         self.image = ROAD_IMAGES['up_right']
 
 
 class UpLeftRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(UpLeftRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(UpLeftRoad, self).__init__(settings)
         self.image = ROAD_IMAGES['up_left']
 
 
 class RightDownRoad(BaseRoad):
-    def __init__(self, *parent_groups):
-        super(RightDownRoad, self).__init__(*parent_groups)
+    def __init__(self, settings):
+        super(RightDownRoad, self).__init__(settings)
         self.image = ROAD_IMAGES['up_left']
 
 

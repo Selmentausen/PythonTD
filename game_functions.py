@@ -9,7 +9,7 @@ BACKGROUND_IMAGES = [load_image(f'background/bg{i}.png') for i in range(1, 8)] +
     load_image('background/bg_blank.png')] * 50
 
 
-def generate_map_board_list(level, *road_parent_groups):
+def generate_map_board_list(level, settings):
     rows, cols = [int(n) for n in level[0].split(',')]
     board_list = [[None for _ in range(cols)] for _ in range(rows)]
     for y in range(1, rows + 1):
@@ -17,7 +17,7 @@ def generate_map_board_list(level, *road_parent_groups):
             symbol = level[y][x]
             road = ROAD_SYMBOLS.get(symbol, None)
             if road:
-                board_list[y - 1][x] = road(*road_parent_groups)
+                board_list[y - 1][x] = road(settings)
     return board_list
 
 

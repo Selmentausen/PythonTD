@@ -22,8 +22,8 @@ ROAD_DIRECTIONS = {
 
 
 class EnemyBase(pg.sprite.Sprite):
-    def __init__(self, hp, speed, enemy_level, settings, board, *parent_groups):
-        super(EnemyBase, self).__init__(*parent_groups)
+    def __init__(self, hp, speed, enemy_level, settings, board):
+        super(EnemyBase, self).__init__(settings.enemy_sprites, settings.all_sprites)
         self.image = ENEMY_IMAGES['placeholder_enemy']
         self.current_cell = board.enemy_start_cell
         self.board = board
@@ -44,10 +44,10 @@ class EnemyBase(pg.sprite.Sprite):
         self.rect.x, self.rect.y = self.x, self.y
 
     def set_start_pos(self):
-        self.image = pg.transform.scale(self.image, (self.board.cell_x_size // 2, self.board.cell_y_size // 2))
-        self.rect = self.image.get_rect()
         x, y = self.board.get_cell_top_left_coordinates(*self.board.enemy_start_cell)
         self.x, self.y = x + self.board.cell_x_size // 4, y + self.board.cell_y_size // 4
+        self.image = pg.transform.scale(self.image, (self.board.cell_x_size // 2, self.board.cell_y_size // 2))
+        self.rect = self.image.get_rect()
 
     def move_on_road(self, delta_time):
         i, j = self.board.get_cell_by_position((self.x, self.y))

@@ -4,9 +4,7 @@ import sys
 pg.init()
 screen = pg.display.set_mode((1024, 768))
 clock = pg.time.Clock()
-all_sprites = pg.sprite.Group()
-enemy_sprites = pg.sprite.Group()
-tower_sprites = pg.sprite.Group()
+
 
 from classes import towers
 from classes.board import MapBoard, BuyMenuBoard
@@ -56,7 +54,7 @@ def main_loop():
     pg.time.set_timer(ENEMY_SPAWN_EVENT, 700)
     pg.time.set_timer(TEST_EVENT, 10)
 
-    board_list = generate_map_board_list(load_level('1.txt'), all_sprites)
+    board_list = generate_map_board_list(load_level('1.txt'), settings)
     map_board = MapBoard(board_list, settings.map_size, settings)
 
     all_waves = generate_enemy_waves(load_level('1.txt'))
@@ -65,7 +63,7 @@ def main_loop():
 
     background_surface = create_background_surface(screen.get_size())
 
-    map_board.add_object_to_cell(towers.ArrowTower, 2, 2, tower_sprites, all_sprites)
+    map_board.add_object_to_cell(towers.ArrowTower, 2, 2)
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -84,7 +82,7 @@ def main_loop():
             elif event.type == ENEMY_SPAWN_EVENT:
                 if current_wave and wave_start:
                     enemy = current_wave.pop(0)
-                    enemy(30, 30, 1, settings, map_board, enemy_sprites, all_sprites)
+                    enemy(30, 30, 1, settings, map_board)
                 elif all_waves and not current_wave:
                     current_wave = all_waves.pop(0)
                     wave_start = False
@@ -93,9 +91,10 @@ def main_loop():
         screen.blit(background_surface, (0, 0))
         map_board.render(screen)
 
-        all_sprites.draw(screen)
-        tower_sprites.update(delta_time, enemy_sprites, screen)
-        enemy_sprites.update(delta_time)
+        settings.all_sprites.draw(screen)
+        settings.tower_sprites.update(delta_time, screen)
+        settings.enemy_sprites.update(delta_time)
+        settings.bullet_sprites.update(delta_time)
 
         pg.display.flip()
         delta_time = clock.tick(60) / 1000
@@ -103,4 +102,4 @@ def main_loop():
 
 if __name__ == '__main__':
     start_screen(screen)
-main_loop()
+    main_loop()
