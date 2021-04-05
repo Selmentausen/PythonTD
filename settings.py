@@ -16,7 +16,8 @@ class Settings:
 
         # Tower settings
         self.arrow_tower_range = 100
-        self.arrow_tower_damage = 1
+        self.arrow_tower_attack_speed = 1
+        self.arrow_tower_damage = 10
 
     def set_screen_sizes(self, screen_size):
         self.screen_size = screen_size

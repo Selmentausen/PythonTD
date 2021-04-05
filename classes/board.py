@@ -48,11 +48,11 @@ class Board:
     def get_cell_top_left_coordinates(self, row: int, col: int) -> (int, int):
         return self.cell_x_size * (col + 1), self.cell_y_size * (row + 1)
 
-    def add_object_to_cell(self, obj, row, col, replace=False, parent_groups=()):
+    def add_object_to_cell(self, obj, row, col, *parent_groups, replace=False):
         if not replace and self.board[row][col]:
             raise CellOccupied
         object_top_left = self.get_cell_top_left_coordinates(row, col)
-        self.board[row][col] = obj(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size), parent_groups)
+        self.board[row][col] = obj(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size), *parent_groups)
 
 
 class MapBoard(Board):
