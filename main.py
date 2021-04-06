@@ -65,8 +65,8 @@ def main_loop():
 
     background_surface = create_background_surface(screen.get_size())
 
-    map_board.add_object_to_cell(towers.ArrowTower, 2, 2)
-    map_board.add_object_to_cell(towers.ArrowTower, 2, 4)
+    map_board.add_object_to_cell(towers.SplitTower, 2, 2)
+    map_board.add_object_to_cell(towers.FastTower, 2, 4)
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -98,7 +98,6 @@ def main_loop():
         settings.tower_sprites.update(delta_time, screen)
         settings.enemy_sprites.update(delta_time)
         settings.bullet_sprites.update(delta_time)
-        print(delta_time)
 
         pg.display.flip()
         delta_time = clock.tick(60) / 1000

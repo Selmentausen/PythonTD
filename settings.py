@@ -25,9 +25,16 @@ class Settings:
         self.jiggle_intensity = 0.3
 
         # Tower settings
-        self.arrow_tower_range = 200
-        self.arrow_tower_attack_speed = 1
-        self.arrow_tower_damage = 10
+        self.normal_tower_range = 200
+        self.normal_tower_attack_speed = 1
+        self.normal_tower_damage = 10
+        self.fast_tower_range = 150
+        self.fast_tower_attack_speed = 0.4
+        self.fast_tower_damage = 5
+        self.split_tower_range = 100
+        self.split_tower_attack_speed = 1
+        self.split_tower_damage = 3
+        self.split_tower_targets = 3
         self.bullet_speed = 200
 
     def set_screen_sizes(self, screen_size):
