@@ -96,7 +96,7 @@ def main_loop():
 
         settings.all_sprites.draw(screen)
         settings.tower_sprites.update(delta_time, screen)
-        settings.enemy_sprites.update(delta_time)
+        settings.enemy_sprites.update(delta_time, screen)
         settings.bullet_sprites.update(delta_time)
 
         pg.display.flip()

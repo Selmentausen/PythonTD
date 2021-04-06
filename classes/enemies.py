@@ -31,17 +31,27 @@ class EnemyBase(pg.sprite.Sprite):
 
         self.x, self.y = 0, 0
         self.hp = hp
+        self.max_hp = hp
         self.speed = speed
         self.level = enemy_level
         self.up = self.right = 1
         self.set_start_pos()
+        self.hp_bar = self.update_health_bar()
 
-    def update(self, delta_time) -> None:
+    def update(self, delta_time, screen) -> None:
         self.move_on_road(delta_time)
         self._update_rect()
+        screen.blit(self.hp_bar, (self.rect.x, self.rect.y))
 
     def _update_rect(self):
         self.rect.x, self.rect.y = self.x, self.y
+
+    def update_health_bar(self):
+        w, h = self.rect.width * (self.hp / self.max_hp), self.rect.height * 0.2
+        hp_bar = pg.Surface((w, h))
+        hp_bar.fill((255, 0, 0))
+        hp_bar.set_alpha(200)
+        return hp_bar
 
     def set_start_pos(self):
         x, y = self.board.get_cell_top_left_coordinates(*self.board.enemy_start_cell)
@@ -98,6 +108,8 @@ class EnemyBase(pg.sprite.Sprite):
         self.hp -= damage
         if self.hp <= 0:
             self.kill()
+            return
+        self.hp_bar = self.update_health_bar()
 
 
 class SquareEnemy(EnemyBase):
@@ -106,6 +118,7 @@ class SquareEnemy(EnemyBase):
         self.image = ENEMY_IMAGES['square_enemy']
         self.image.set_alpha(210)
         self.hp *= self.settings.square_enemy_hp_multiplier
+        self.max_hp = self.hp
         self.speed *= self.settings.square_enemy_speed_multiplier
         self.set_start_pos()
 
@@ -116,6 +129,7 @@ class CircleEnemy(EnemyBase):
         self.image = ENEMY_IMAGES['circle_enemy']
         self.image.set_alpha(180)
         self.hp *= self.settings.circle_enemy_hp_multiplier
+        self.max_hp = self.hp
         self.speed *= self.settings.circle_enemy_speed_multiplier
         self.set_start_pos()
 
@@ -126,6 +140,8 @@ class RhombusEnemy(EnemyBase):
         self.image = ENEMY_IMAGES['rhombus_enemy']
         self.image.set_alpha(180)
         self.hp *= self.settings.rhombus_enemy_hp_multiplier
+        self.max_hp = self.hp
+        self.set_start_pos()
         self.speed *= self.settings.rhombus_enemy_speed_multiplier
         self.set_start_pos()
 
