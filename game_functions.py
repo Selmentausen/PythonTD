@@ -1,5 +1,5 @@
 from classes.roads import ROAD_SYMBOLS
-from classes import enemies
+from classes import enemies, towers
 from functions import load_image
 from random import choice
 import pygame as pg
@@ -19,6 +19,11 @@ def generate_map_board_list(level, settings):
             if road:
                 board_list[y - 1][x] = road(settings)
     return board_list
+
+
+def generate_buy_menu_list():
+    return [[towers.NormalTower, towers.FastTower, towers.SplitTower, 'sell', 'start_wave']]
+
 
 
 def generate_enemy_waves(level):

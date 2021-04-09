@@ -8,6 +8,10 @@ class Settings:
         self.buy_menu_height = 0.25
         self.fps = 30
 
+        # Game logic
+        self.wave_start = False
+        self.selected_tower = None
+
         # Sprite groups
         self.all_sprites = pg.sprite.Group()
         self.enemy_sprites = pg.sprite.Group()

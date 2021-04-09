@@ -6,7 +6,16 @@ from math import hypot
 from random import sample
 
 TOWER_IMAGES = {
-    'normal_tower': load_image('towers/ArrowTower.png')
+    'normal_tower': [load_image('towers/normal_tower_lvl1.png'),
+                     load_image('towers/normal_tower_lvl2.png'),
+                     load_image('towers/normal_tower_lvl3.png')],
+    'arrow_tower': load_image('towers/ArrowTower.png'),
+    'fast_tower': [load_image('towers/fast_tower_lvl1.png'),
+                   load_image('towers/fast_tower_lvl2.png'),
+                   load_image('towers/fast_tower_lvl3.png')],
+    'split_tower': [load_image('towers/split_tower_lvl1.png'),
+                    load_image('towers/split_tower_lvl2.png'),
+                    load_image('towers/split_tower_lvl3.png')]
 }
 
 BULLET_IMAGES = {
@@ -18,7 +27,7 @@ BULLET_IMAGES = {
 class BaseTower(pg.sprite.Sprite):
     def __init__(self, settings, top_left, size):
         super(BaseTower, self).__init__(settings.all_sprites, settings.tower_sprites)
-        self.image = pg.transform.scale(TOWER_IMAGES['normal_tower'], size)
+        self.image = pg.transform.scale(TOWER_IMAGES['arrow_tower'], size)
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
         self.settings = settings
@@ -59,7 +68,7 @@ class BaseTower(pg.sprite.Sprite):
 class NormalTower(BaseTower):
     def __init__(self, settings, top_left, size):
         super(NormalTower, self).__init__(settings, top_left, size)
-        image = TOWER_IMAGES['normal_tower']
+        image = TOWER_IMAGES['normal_tower'][0]
         self.image = pg.transform.scale(image, size)
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
@@ -84,7 +93,7 @@ class NormalTower(BaseTower):
 class FastTower(BaseTower):
     def __init__(self, settings, top_left, size):
         super(FastTower, self).__init__(settings, top_left, size)
-        image = TOWER_IMAGES['normal_tower']
+        image = TOWER_IMAGES['fast_tower'][0]
         self.image = pg.transform.scale(image, size)
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
@@ -109,7 +118,7 @@ class FastTower(BaseTower):
 class SplitTower(BaseTower):
     def __init__(self, settings, top_left, size):
         super(SplitTower, self).__init__(settings, top_left, size)
-        image = TOWER_IMAGES['normal_tower']
+        image = TOWER_IMAGES['split_tower'][0]
         self.image = pg.transform.scale(image, size)
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
@@ -124,4 +133,3 @@ class SplitTower(BaseTower):
             for enemy in sample(enemies, k=min(len(enemies), self.targets)):
                 Bullet(self.rect.center, enemy, self.damage, self.settings)
             self.attack_cooldown = self.attack_speed
-

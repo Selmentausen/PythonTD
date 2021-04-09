@@ -10,7 +10,7 @@ from classes import towers
 from classes.board import MapBoard, BuyMenuBoard
 from settings import Settings
 from functions import load_level
-from game_functions import create_background_surface, generate_map_board_list
+from game_functions import create_background_surface, generate_map_board_list, generate_buy_menu_list
 from game_functions import generate_enemy_waves
 
 
@@ -60,16 +60,13 @@ def main_loop():
 
     board_list = generate_map_board_list(load_level('1.txt'), settings)
     map_board = MapBoard(board_list, settings)
-    buy_menu_board = BuyMenuBoard([[i] * 5 for i in range(3)], settings)
+    buy_menu_board = BuyMenuBoard(generate_buy_menu_list(), settings)
 
     all_waves = generate_enemy_waves(load_level('1.txt'))
     current_wave = all_waves.pop(0)
-    wave_start = False
 
     background_surface = create_background_surface(screen.get_size())
 
-    map_board.add_object_to_cell(towers.SplitTower, 2, 2)
-    map_board.add_object_to_cell(towers.FastTower, 2, 4)
     while True:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -83,17 +80,17 @@ def main_loop():
                 if event.key == pg.K_f:
                     pg.display.toggle_fullscreen()
                 if event.key == pg.K_p:
-                    wave_start = True
+                    settings.wave_start = True
             elif event.type == pg.MOUSEBUTTONDOWN:
-                map_board.mouse_click_handler(event)
-                buy_menu_board.mouse_click_handler(event)
+                map_board.mouse_click(event)
+                buy_menu_board.mouse_click(event)
             elif event.type == ENEMY_SPAWN_EVENT:
-                if current_wave and wave_start:
+                if current_wave and settings.wave_start:
                     enemy = current_wave.pop(0)
                     enemy(30, 30, 1, settings, map_board)
                 elif all_waves and not current_wave:
                     current_wave = all_waves.pop(0)
-                    wave_start = False
+                    settings.wave_start = False
 
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))

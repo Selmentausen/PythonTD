@@ -11,6 +11,7 @@ BULLET_IMAGES = {
 class Button(pg.sprite.Sprite):
     def __init__(self, top_left, width, height, settings):
         super(Button, self).__init__(settings.all_sprites)
+        self.settings = settings
         self.top_left = top_left
         self.width = width
         self.height = height
@@ -18,8 +19,13 @@ class Button(pg.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
 
-    def clicked(self):
-        print('you clicked this button')
+    def click(self):
+        pass
+
+
+class StartWaveButton(Button):
+    def click(self):
+        self.settings.start_wave = True
 
 
 class Bullet(pg.sprite.Sprite):

@@ -1,6 +1,7 @@
 import pygame as pg
 from exceptions import CellOccupied
 from .roads import BaseRoad, EnemySpawn, EnemyDestination
+from .towers import BaseTower
 from functions import load_image
 from random import choice
 
@@ -19,16 +20,21 @@ class Board:
         for i in range(self.rows):
             for j in range(self.cols):
                 pg.draw.rect(screen, pg.Color('White'), [*self.get_cell_top_left_coordinates(i, j),
-                                                         self.cell_x_size, self.cell_y_size], 1)
+                                                        self.cell_x_size, self.cell_y_size], 1)
 
-    def mouse_click_handler(self, event):
+    def mouse_click(self, event):
         pos = self.get_cell_by_position(event.pos)
         if pos:
             obj = self.get_object_in_cell(*pos)
-            try:
-                obj.clicked()
-            except AttributeError:
-                print(f'{obj} ({obj.__class__.__name__}) cannot be clicked')
+            if obj:
+                try:
+                    obj.clicked()
+                except AttributeError:
+                    print(f'{obj} ({obj.__class__.__name__}) cannot be clicked')
+            elif self.settings.selected_tower:
+                self.add_object_to_cell(self.settings.selected_tower, *pos)
+                print(f'added tower {self.settings.selected_tower.__name__} to cell {pos}')
+                self.settings.selected_tower = None
 
     def get_object_in_cell(self, row, col):
         return self.board[row][col]
@@ -43,11 +49,11 @@ class Board:
     def get_cell_top_left_coordinates(self, row: int, col: int) -> (int, int):
         return self.cell_x_size * (col + 1), self.cell_y_size * (row + 1)
 
-    def add_object_to_cell(self, obj, row, col, *parent_groups, replace=False):
+    def add_object_to_cell(self, obj, row, col, replace=False):
         if not replace and self.board[row][col]:
             raise CellOccupied
         object_top_left = self.get_cell_top_left_coordinates(row, col)
-        self.board[row][col] = obj(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size), *parent_groups)
+        self.board[row][col] = obj(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size))
 
 
 class MapBoard(Board):
@@ -78,6 +84,7 @@ class BuyMenuBoard(Board):
         screen_size = screen_width, screen_height * settings.buy_menu_height
         super(BuyMenuBoard, self).__init__(board_list, screen_size, settings)
         self.board_offset_x, self.board_offset_y = 0, screen_height * settings.map_height
+        self.selected_tower = None
 
     def get_cell_top_left_coordinates(self, row, col):
         return self.board_offset_x + self.cell_x_size * (col + 1), self.board_offset_y + self.cell_y_size * (row + 1)
@@ -88,3 +95,10 @@ class BuyMenuBoard(Board):
         col = int((x - self.cell_x_size - self.board_offset_x) // self.cell_x_size)
         if 0 <= col < self.cols and 0 <= row < self.rows:
             return row, col
+
+    def mouse_click(self, event):
+        pos = self.get_cell_by_position(event.pos)
+        if pos:
+            obj = self.get_object_in_cell(*pos)
+            if issubclass(obj, BaseTower):
+                self.settings.selected_tower = obj if self.settings.selected_tower != obj else None
