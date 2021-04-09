@@ -7,18 +7,13 @@ from random import choice
 
 class Board:
     def __init__(self, board_list, screen_size, settings):
-        screen_width, screen_height = screen_size
         self.screen_size = screen_size
         self.settings = settings
-        self.offset = 1
         self.board = board_list
         self.rows = len(board_list)
         self.cols = len(board_list[0]) if board_list else 0
-        self.cell_x_size = int(screen_width / (self.cols + self.offset * 2))
-        self.cell_y_size = int(screen_height / (self.rows + self.offset * 2))
-
-    def get_empty_board(self):
-        return [[None] * self.cols for _ in range(self.rows)]
+        self.cell_x_size = int(self.screen_size[0] / (self.cols + 2))
+        self.cell_y_size = int(self.screen_size[1] / (self.rows + 2))
 
     def render(self, screen: pg.Surface):
         for i in range(self.rows):
@@ -33,7 +28,7 @@ class Board:
             try:
                 obj.clicked()
             except AttributeError:
-                print(obj.__class__.__name__, 'cannot be clicked')
+                print(f'{obj} ({obj.__class__.__name__}) cannot be clicked')
 
     def get_object_in_cell(self, row, col):
         return self.board[row][col]
@@ -56,8 +51,11 @@ class Board:
 
 
 class MapBoard(Board):
-    def __init__(self, board_list, screen_size, settings):
+    def __init__(self, board_list, settings):
+        screen_width, screen_height = settings.screen_size
+        screen_size = screen_width, screen_height * settings.map_height
         super(MapBoard, self).__init__(board_list, screen_size, settings)
+
         self.enemy_start_cell = None
         self.enemy_destination_cell = None
         self._init_roads()
@@ -73,14 +71,13 @@ class MapBoard(Board):
                     elif isinstance(self.board[i][j], EnemyDestination):
                         self.enemy_destination_cell = i, j
 
-    def spawn_enemy(self, enemy_class):
-        pass
-
 
 class BuyMenuBoard(Board):
-    def __init__(self, board_list, screen_size, settings, board_offset):
+    def __init__(self, board_list, settings):
+        screen_width, screen_height = settings.screen_size
+        screen_size = screen_width, screen_height * settings.buy_menu_height
         super(BuyMenuBoard, self).__init__(board_list, screen_size, settings)
-        self.board_offset_x, self.board_offset_y = board_offset
+        self.board_offset_x, self.board_offset_y = 0, screen_height * settings.map_height
 
     def get_cell_top_left_coordinates(self, row, col):
         return self.board_offset_x + self.cell_x_size * (col + 1), self.board_offset_y + self.cell_y_size * (row + 1)

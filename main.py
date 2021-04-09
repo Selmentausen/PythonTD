@@ -13,11 +13,6 @@ from functions import load_level
 from game_functions import create_background_surface, generate_map_board_list
 from game_functions import generate_enemy_waves
 
-settings = Settings()
-settings.set_screen_sizes(screen.get_size())
-ENEMY_SPAWN_EVENT = pg.USEREVENT + 10
-TEST_EVENT = pg.USEREVENT + 15
-
 
 def terminate():
     pg.quit()
@@ -46,18 +41,26 @@ def menu(surface):
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_m:
                     running = False
+                if event.key == pg.K_r:
+                    return True
         surface.fill(pg.Color('Blue'))
         pg.display.flip()
         clock.tick()
 
 
 def main_loop():
+    settings = Settings()
+    settings.set_screen_sizes(screen.get_size())
+    ENEMY_SPAWN_EVENT = pg.USEREVENT + 10
+    # TEST_EVENT = pg.USEREVENT + 15
+
     delta_time = clock.tick() / 1000
-    pg.time.set_timer(ENEMY_SPAWN_EVENT, 700)
-    pg.time.set_timer(TEST_EVENT, 10)
+    pg.time.set_timer(ENEMY_SPAWN_EVENT, 1500)
+    # pg.time.set_timer(TEST_EVENT, 10)
 
     board_list = generate_map_board_list(load_level('1.txt'), settings)
-    map_board = MapBoard(board_list, settings.map_size, settings)
+    map_board = MapBoard(board_list, settings)
+    buy_menu_board = BuyMenuBoard([[i] * 5 for i in range(3)], settings)
 
     all_waves = generate_enemy_waves(load_level('1.txt'))
     current_wave = all_waves.pop(0)
@@ -72,16 +75,18 @@ def main_loop():
             if event.type == pg.QUIT:
                 terminate()
             elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:
-                    terminate()
+                if event.key == pg.K_ESCAPE:    # DEV ONLY
+                    terminate()                 # DEV ONLY
                 if event.key == pg.K_m:
-                    menu(screen)
+                    if menu(screen):
+                        return True
                 if event.key == pg.K_f:
                     pg.display.toggle_fullscreen()
                 if event.key == pg.K_p:
                     wave_start = True
             elif event.type == pg.MOUSEBUTTONDOWN:
                 map_board.mouse_click_handler(event)
+                buy_menu_board.mouse_click_handler(event)
             elif event.type == ENEMY_SPAWN_EVENT:
                 if current_wave and wave_start:
                     enemy = current_wave.pop(0)
@@ -93,11 +98,9 @@ def main_loop():
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))
         map_board.render(screen)
-
+        buy_menu_board.render(screen)
         settings.all_sprites.draw(screen)
-        settings.tower_sprites.update(delta_time, screen)
-        settings.enemy_sprites.update(delta_time, screen)
-        settings.bullet_sprites.update(delta_time)
+        settings.all_sprites.update(delta_time, screen)
 
         pg.display.flip()
         delta_time = clock.tick(60) / 1000
@@ -105,4 +108,6 @@ def main_loop():
 
 if __name__ == '__main__':
     start_screen(screen)
-    main_loop()
+    while main_loop():
+        pass
+    terminate()

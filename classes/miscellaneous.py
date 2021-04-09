@@ -34,7 +34,7 @@ class Bullet(pg.sprite.Sprite):
         self.x, self.y = start
         self.enemy = enemy
 
-    def update(self, delta_time):
+    def update(self, delta_time, screen):
         if pg.sprite.collide_rect(self, self.enemy):
             self.enemy.hit(self.damage)
             self.kill()
