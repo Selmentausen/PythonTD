@@ -21,8 +21,19 @@ def generate_map_board_list(level, settings):
     return board_list
 
 
-def generate_buy_menu_list():
-    return [[towers.NormalTower, towers.FastTower, towers.SplitTower, 'sell', 'start_wave']]
+def add_buttons(screen, settings):
+    w, h = screen.get_size()
+    buttons_screen = 0, int(h * settings.map_height), w, h
+    amount = 5
+    size = [buttons_screen[2] // (amount + 2), (buttons_screen[3] - buttons_screen[1]) // 2]
+    padding = size[0] // 10
+    print(size[0])
+    size[0] -= padding * (amount - 1) // amount
+    print(size[0])
+
+    for i in range(amount):
+        left_top = size[0] * (i + 1) + padding * (i + 1), buttons_screen[1]
+        Button(left_top, size, settings)
 
 
 def generate_enemy_waves(level):

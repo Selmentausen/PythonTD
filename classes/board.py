@@ -1,9 +1,6 @@
 import pygame as pg
-from exceptions import CellOccupied
 from .roads import BaseRoad, EnemySpawn, EnemyDestination
 from .towers import BaseTower
-from functions import load_image
-from random import choice
 
 
 class Board:

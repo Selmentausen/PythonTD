@@ -2,7 +2,8 @@ import pygame as pg
 from functions import load_image
 
 BUTTON_IMAGES = {
-    'test_button': load_image('buttons/test.png')
+    'test_button': load_image('buttons/test.png'),
+    'button': load_image('buttons/button.png')
 }
 
 
@@ -10,7 +11,7 @@ class Button(pg.sprite.Sprite):
     def __init__(self, left_top, size, settings):
         super(Button, self).__init__(settings.all_sprites, settings.button_sprites)
         self.settings = settings
-        self.image = pg.transform.scale(BUTTON_IMAGES['test_button'], size)
+        self.image = pg.transform.scale(BUTTON_IMAGES['button'], size)
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = left_top
         self._bound_function = None

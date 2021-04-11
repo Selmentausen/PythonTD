@@ -10,7 +10,7 @@ from classes.board import MapBoard, BuyMenuBoard
 from classes.buttons import Button
 from settings import Settings
 from functions import load_level
-from game_functions import create_background_surface, generate_map_board_list, generate_buy_menu_list
+from game_functions import create_background_surface, generate_map_board_list, add_buttons
 from game_functions import generate_enemy_waves
 
 
@@ -63,8 +63,7 @@ def main_loop():
     board_list = generate_map_board_list(load_level('1.txt'), settings)
     map_board = MapBoard(board_list, settings)
     map_board.add_object_to_cell(towers.NormalTower, 2, 2)
-
-    button = Button((0, 0), (100, 100), settings)
+    add_buttons(screen, settings)
 
     all_waves = generate_enemy_waves(load_level('1.txt'))
     current_wave = all_waves.pop(0)
