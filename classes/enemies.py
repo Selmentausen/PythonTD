@@ -59,6 +59,7 @@ class EnemyBase(pg.sprite.Sprite):
         self.x, self.y = x + self.board.cell_x_size // 4, y + self.board.cell_y_size // 4
         self.image = pg.transform.scale(self.image, (self.board.cell_x_size // 2, self.board.cell_y_size // 2))
         self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = x, y
 
     def move_on_road(self, delta_time):
         i, j = self.board.get_cell_by_position((self.x, self.y))

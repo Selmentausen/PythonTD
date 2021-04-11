@@ -64,6 +64,7 @@ class Board:
             return
         object_top_left = self.get_cell_top_left_coordinates(row, col)
         self.board[row][col] = obj(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size))
+        self.settings.selected_tower = None
 
 
 class MapBoard(Board):

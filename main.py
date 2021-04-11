@@ -6,8 +6,7 @@ screen = pg.display.set_mode((1024, 768))
 clock = pg.time.Clock()
 
 from classes import towers
-from classes.board import MapBoard, BuyMenuBoard
-from classes.buttons import Button
+from classes.board import MapBoard
 from settings import Settings
 from functions import load_level
 from game_functions import create_background_surface, generate_map_board_list, add_buttons
@@ -63,7 +62,7 @@ def main_loop():
     board_list = generate_map_board_list(load_level('1.txt'), settings)
     map_board = MapBoard(board_list, settings)
     map_board.add_object_to_cell(towers.NormalTower, 2, 2)
-    add_buttons(screen, settings)
+    add_buttons(screen, settings, [towers.NormalTower, towers.FastTower, towers.SplitTower])
 
     all_waves = generate_enemy_waves(load_level('1.txt'))
     current_wave = all_waves.pop(0)
@@ -91,7 +90,8 @@ def main_loop():
 
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))
-        map_board.update(events.copy(), screen)
+        map_board.update(events.copy(), screen, placing_tower=settings.selected_tower)
+
         settings.all_sprites.draw(screen)
         settings.all_sprites.update(delta_time=delta_time, screen=screen, mouse_pos=pg.mouse.get_pos())
 

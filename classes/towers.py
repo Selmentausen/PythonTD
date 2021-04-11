@@ -4,19 +4,6 @@ import pygame as pg
 from math import hypot
 from random import sample
 
-TOWER_IMAGES = {
-    'normal_tower': [load_image('towers/normal_tower_lvl1.png'),
-                     load_image('towers/normal_tower_lvl2.png'),
-                     load_image('towers/normal_tower_lvl3.png')],
-    'arrow_tower': load_image('towers/ArrowTower.png'),
-    'fast_tower': [load_image('towers/fast_tower_lvl1.png'),
-                   load_image('towers/fast_tower_lvl2.png'),
-                   load_image('towers/fast_tower_lvl3.png')],
-    'split_tower': [load_image('towers/split_tower_lvl1.png'),
-                    load_image('towers/split_tower_lvl2.png'),
-                    load_image('towers/split_tower_lvl3.png')]
-}
-
 BULLET_IMAGES = {
     'normal_bullet': load_image('towers/normal_bullet.png'),
     'big_bullet': load_image('towers/big_bullet.png')
@@ -24,9 +11,11 @@ BULLET_IMAGES = {
 
 
 class BaseTower(pg.sprite.Sprite):
+    tower_image = [load_image('towers/ArrowTower.png')]
+
     def __init__(self, settings, top_left, size):
         super(BaseTower, self).__init__(settings.all_sprites, settings.tower_sprites)
-        self.image = pg.transform.scale(TOWER_IMAGES['arrow_tower'], size)
+        self.image = pg.transform.scale(self.tower_image[0], size)
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
         self.settings = settings
@@ -66,13 +55,12 @@ class BaseTower(pg.sprite.Sprite):
 
 
 class NormalTower(BaseTower):
+    tower_image = [load_image('towers/normal_tower_lvl1.png'),
+                   load_image('towers/normal_tower_lvl2.png'),
+                   load_image('towers/normal_tower_lvl3.png')]
+
     def __init__(self, settings, top_left, size):
         super(NormalTower, self).__init__(settings, top_left, size)
-        image = TOWER_IMAGES['normal_tower'][0]
-        self.image = pg.transform.scale(image, size)
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = top_left
-
         self.range = settings.normal_tower_range
         self.attack_speed = settings.normal_tower_attack_speed
         self.damage = settings.normal_tower_damage
@@ -91,13 +79,12 @@ class NormalTower(BaseTower):
 
 
 class FastTower(BaseTower):
+    tower_image = [load_image('towers/fast_tower_lvl1.png'),
+                   load_image('towers/fast_tower_lvl2.png'),
+                   load_image('towers/fast_tower_lvl3.png')]
+
     def __init__(self, settings, top_left, size):
         super(FastTower, self).__init__(settings, top_left, size)
-        image = TOWER_IMAGES['fast_tower'][0]
-        self.image = pg.transform.scale(image, size)
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = top_left
-
         self.range = settings.fast_tower_range
         self.attack_speed = settings.fast_tower_attack_speed
         self.damage = settings.fast_tower_damage
@@ -116,13 +103,12 @@ class FastTower(BaseTower):
 
 
 class SplitTower(BaseTower):
+    tower_image = [load_image('towers/split_tower_lvl1.png'),
+                   load_image('towers/split_tower_lvl2.png'),
+                   load_image('towers/split_tower_lvl3.png')]
+
     def __init__(self, settings, top_left, size):
         super(SplitTower, self).__init__(settings, top_left, size)
-        image = TOWER_IMAGES['split_tower'][0]
-        self.image = pg.transform.scale(image, size)
-        self.rect = self.image.get_rect()
-        self.rect.x, self.rect.y = top_left
-
         self.range = settings.split_tower_range
         self.attack_speed = settings.split_tower_attack_speed
         self.damage = settings.split_tower_damage
