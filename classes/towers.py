@@ -1,6 +1,5 @@
 from functions import load_image
 from game_functions import get_tower_range_surface
-from .miscellaneous import Bullet
 import pygame as pg
 from math import hypot
 from random import sample
@@ -40,7 +39,8 @@ class BaseTower(pg.sprite.Sprite):
         self.attack_cooldown = 0
         self.hit_order = 'first'
 
-    def update(self, delta_time, screen) -> None:
+    def update(self, *args, **kwargs) -> None:
+        delta_time, screen = kwargs['delta_time'], kwargs['screen']
         self.attack_cooldown = max(self.attack_cooldown - delta_time, 0)
         self.draw_tower_radius(screen)
         enemies = self.get_enemies_in_range(self.settings.enemy_sprites)
@@ -133,3 +133,32 @@ class SplitTower(BaseTower):
             for enemy in sample(enemies, k=min(len(enemies), self.targets)):
                 Bullet(self.rect.center, enemy, self.damage, self.settings)
             self.attack_cooldown = self.attack_speed
+
+
+class Bullet(pg.sprite.Sprite):
+    def __init__(self, start, enemy, damage, settings):
+        super(Bullet, self).__init__(settings.all_sprites, settings.bullet_sprites)
+        self.settings = settings
+        self.image = BULLET_IMAGES['big_bullet']
+        self.rect = self.image.get_rect()
+        self.rect.x, self.rect.y = start
+        self.speed = settings.bullet_speed
+        self.damage = damage
+        self.x, self.y = start
+        self.enemy = enemy
+
+    def update(self, *args, **kwargs) -> None:
+        delta_time = kwargs['delta_time']
+        if pg.sprite.collide_rect(self, self.enemy):
+            self.enemy.hit(self.damage)
+            self.kill()
+        self._update_unit_vector()
+        self.x += self.unit_vector[0] * self.speed * delta_time
+        self.y += self.unit_vector[1] * self.speed * delta_time
+        self.rect.x = self.x
+        self.rect.y = self.y
+
+    def _update_unit_vector(self):
+        v = self.enemy.rect.centerx - self.rect.centerx, self.enemy.rect.centery - self.rect.centery
+        vm = hypot(*v)
+        self.unit_vector = (v[0] / vm, v[1] / vm)

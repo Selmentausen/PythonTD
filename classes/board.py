@@ -16,25 +16,37 @@ class Board:
         self.cell_x_size = int(self.screen_size[0] / (self.cols + 2))
         self.cell_y_size = int(self.screen_size[1] / (self.rows + 2))
 
-    def render(self, screen: pg.Surface):
+    def update(self, events, screen, placing_tower=None):
+        self.render(screen, draw_occupied=bool(placing_tower))
+
+        for event in events:
+            if event.type == pg.MOUSEBUTTONDOWN:
+                cell_pos = self.get_cell_by_position(event.pos)
+                if cell_pos:
+                    if placing_tower:
+                        self.add_object_to_cell(placing_tower, *cell_pos)
+                    else:
+                        self.mouse_click(cell_pos)
+
+    def render(self, screen: pg.Surface, draw_occupied=False):
         for i in range(self.rows):
             for j in range(self.cols):
-                pg.draw.rect(screen, pg.Color('White'), [*self.get_cell_top_left_coordinates(i, j),
-                                                        self.cell_x_size, self.cell_y_size], 1)
+                if self.get_object_in_cell(i, j) and draw_occupied:
+                    color = pg.Color('Red')
+                else:
+                    color = pg.Color('White')
+                pg.draw.rect(screen, color, [*self.get_cell_top_left_coordinates(i, j),
+                                             self.cell_x_size, self.cell_y_size], 1)
 
-    def mouse_click(self, event):
-        pos = self.get_cell_by_position(event.pos)
-        if pos:
-            obj = self.get_object_in_cell(*pos)
-            if obj:
-                try:
-                    obj.clicked()
-                except AttributeError:
-                    print(f'{obj} ({obj.__class__.__name__}) cannot be clicked')
-            elif self.settings.selected_tower:
-                self.add_object_to_cell(self.settings.selected_tower, *pos)
-                print(f'added tower {self.settings.selected_tower.__name__} to cell {pos}')
-                self.settings.selected_tower = None
+    def mouse_click(self, cell_pos, tower=None):
+        obj = self.get_object_in_cell(*cell_pos)
+        if obj:
+            try:
+                obj.clicked()
+            except AttributeError:
+                print(f'{obj} ({obj.__class__.__name__}) cannot be clicked')
+        elif tower:
+            self.add_object_to_cell(tower, *cell_pos)
 
     def get_object_in_cell(self, row, col):
         return self.board[row][col]
@@ -51,7 +63,8 @@ class Board:
 
     def add_object_to_cell(self, obj, row, col, replace=False):
         if not replace and self.board[row][col]:
-            raise CellOccupied
+            print('cell occupied')
+            return
         object_top_left = self.get_cell_top_left_coordinates(row, col)
         self.board[row][col] = obj(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size))
 

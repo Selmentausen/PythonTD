@@ -10,7 +10,6 @@ class Settings:
 
         # Game logic
         self.wave_start = False
-        self.selected_tower = None
 
         # Sprite groups
         self.all_sprites = pg.sprite.Group()

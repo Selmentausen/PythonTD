@@ -1,9 +1,9 @@
 from classes.roads import ROAD_SYMBOLS
 from classes import enemies, towers
+from classes.buttons import Button
 from functions import load_image
 from random import choice
 import pygame as pg
-
 
 BACKGROUND_IMAGES = [load_image(f'background/bg{i}.png') for i in range(1, 8)] + [
     load_image('background/bg_blank.png')] * 50
@@ -23,7 +23,6 @@ def generate_map_board_list(level, settings):
 
 def generate_buy_menu_list():
     return [[towers.NormalTower, towers.FastTower, towers.SplitTower, 'sell', 'start_wave']]
-
 
 
 def generate_enemy_waves(level):
@@ -50,7 +49,6 @@ def create_background_surface(screen_size):
 
 def get_tower_range_surface(tower_range):
     image = pg.transform.scale(load_image('towers/tower_radius.png'),
-                              (tower_range * 2, tower_range * 2))
+                               (tower_range * 2, tower_range * 2))
     image.set_alpha(100)
     return image
-

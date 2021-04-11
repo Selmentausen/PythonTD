@@ -38,7 +38,8 @@ class EnemyBase(pg.sprite.Sprite):
         self.set_start_pos()
         self.hp_bar = self.update_health_bar()
 
-    def update(self, delta_time, screen) -> None:
+    def update(self, *args, **kwargs) -> None:
+        delta_time, screen = kwargs['delta_time'], kwargs['screen']
         self.move_on_road(delta_time)
         self._update_rect()
         screen.blit(self.hp_bar, (self.rect.x, self.rect.y))

@@ -5,9 +5,9 @@ pg.init()
 screen = pg.display.set_mode((1024, 768))
 clock = pg.time.Clock()
 
-
 from classes import towers
 from classes.board import MapBoard, BuyMenuBoard
+from classes.buttons import Button
 from settings import Settings
 from functions import load_level
 from game_functions import create_background_surface, generate_map_board_list, generate_buy_menu_list
@@ -39,9 +39,11 @@ def menu(surface):
             if event.type == pg.QUIT:
                 terminate()
             if event.type == pg.KEYDOWN:
-                if event.key == pg.K_m:
+                if event.key == pg.K_ESCAPE:
                     running = False
-                if event.key == pg.K_r:
+                elif event.key == pg.K_q:
+                    terminate()
+                elif event.key == pg.K_r:
                     return True
         surface.fill(pg.Color('Blue'))
         pg.display.flip()
@@ -60,7 +62,9 @@ def main_loop():
 
     board_list = generate_map_board_list(load_level('1.txt'), settings)
     map_board = MapBoard(board_list, settings)
-    buy_menu_board = BuyMenuBoard(generate_buy_menu_list(), settings)
+    map_board.add_object_to_cell(towers.NormalTower, 2, 2)
+
+    button = Button((0, 0), (100, 100), settings)
 
     all_waves = generate_enemy_waves(load_level('1.txt'))
     current_wave = all_waves.pop(0)
@@ -68,22 +72,16 @@ def main_loop():
     background_surface = create_background_surface(screen.get_size())
 
     while True:
-        for event in pg.event.get():
+        events = pg.event.get()
+        for event in events.copy():
             if event.type == pg.QUIT:
                 terminate()
             elif event.type == pg.KEYDOWN:
-                if event.key == pg.K_ESCAPE:    # DEV ONLY
-                    terminate()                 # DEV ONLY
-                if event.key == pg.K_m:
+                if event.key == pg.K_ESCAPE:
                     if menu(screen):
                         return True
-                if event.key == pg.K_f:
-                    pg.display.toggle_fullscreen()
                 if event.key == pg.K_p:
                     settings.wave_start = True
-            elif event.type == pg.MOUSEBUTTONDOWN:
-                map_board.mouse_click(event)
-                buy_menu_board.mouse_click(event)
             elif event.type == ENEMY_SPAWN_EVENT:
                 if current_wave and settings.wave_start:
                     enemy = current_wave.pop(0)
@@ -94,10 +92,9 @@ def main_loop():
 
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))
-        map_board.render(screen)
-        buy_menu_board.render(screen)
+        map_board.update(events.copy(), screen)
         settings.all_sprites.draw(screen)
-        settings.all_sprites.update(delta_time, screen)
+        settings.all_sprites.update(delta_time=delta_time, screen=screen, mouse_pos=pg.mouse.get_pos())
 
         pg.display.flip()
         delta_time = clock.tick(60) / 1000
