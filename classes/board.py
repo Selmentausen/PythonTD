@@ -1,6 +1,7 @@
 import pygame as pg
 from .roads import BaseRoad, EnemySpawn, EnemyDestination
 from .towers import BaseTower
+from . import towers
 
 
 class Board:
@@ -21,7 +22,7 @@ class Board:
                 cell_pos = self.get_cell_by_position(event.pos)
                 if cell_pos:
                     if placing_tower:
-                        self.add_object_to_cell(placing_tower, *cell_pos)
+                        self.add_tower_to_cell(placing_tower, *cell_pos)
                     else:
                         self.mouse_click(cell_pos)
 
@@ -42,8 +43,6 @@ class Board:
                 obj.clicked()
             except AttributeError:
                 print(f'{obj} ({obj.__class__.__name__}) cannot be clicked')
-        elif tower:
-            self.add_object_to_cell(tower, *cell_pos)
 
     def get_object_in_cell(self, row, col):
         return self.board[row][col]
@@ -58,13 +57,14 @@ class Board:
     def get_cell_top_left_coordinates(self, row: int, col: int) -> (int, int):
         return self.cell_x_size * (col + 1), self.cell_y_size * (row + 1)
 
-    def add_object_to_cell(self, obj, row, col, replace=False):
+    def add_tower_to_cell(self, tower, row, col, replace=False):
         if not replace and self.board[row][col]:
             print('cell occupied')
             return
         object_top_left = self.get_cell_top_left_coordinates(row, col)
-        self.board[row][col] = obj(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size))
+        self.board[row][col] = tower(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size))
         self.settings.selected_tower = None
+        self.settings.money -= self.settings.tower_cost[tower.__name__]
 
 
 class MapBoard(Board):

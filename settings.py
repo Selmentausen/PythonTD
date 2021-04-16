@@ -11,6 +11,7 @@ class Settings:
         # Game logic
         self.wave_start = False
         self.selected_tower = None
+        self.money = 150
 
         # Sprite groups
         self.all_sprites = pg.sprite.Group()
@@ -21,27 +22,18 @@ class Settings:
         self.button_sprites = pg.sprite.Group()
 
         # Enemy settings
-        self.square_enemy_hp_multiplier = 1.5
-        self.square_enemy_speed_multiplier = 0.5
-        self.circle_enemy_hp_multiplier = 0.5
-        self.circle_enemy_speed_multiplier = 1.5
-        self.rhombus_enemy_hp_multiplier = 1
-        self.rhombus_enemy_speed_multiplier = 1
+        self.kill_reward = 5
+        self.enemy_hp_multiplier = {'RhombusEnemy': 1, 'SquareEnemy': 1.5, 'CircleEnemy': 0.5}
+        self.enemy_speed_multiplier = {'RhombusEnemy': 1, 'SquareEnemy': 0.5, 'CircleEnemy': 1.5}
         self.jiggle_intensity = 0.3
 
         # Tower settings
-        self.normal_tower_range = 200
-        self.normal_tower_attack_speed = 1
-        self.normal_tower_damage = 10
-        self.fast_tower_range = 150
-        self.fast_tower_attack_speed = 0.4
-        self.fast_tower_damage = 5
-        self.split_tower_range = 100
-        self.split_tower_attack_speed = 1
-        self.split_tower_damage = 3
+        self.tower_range = {'BaseTower': 0, 'NormalTower': 200, 'FastTower': 150, 'SplitTower': 100}
+        self.tower_attack_speed = {'BaseTower': 0, 'NormalTower': 1, 'FastTower': 0.4, 'SplitTower': 1.5}
+        self.tower_damage = {'BaseTower': 0, 'NormalTower': 10, 'FastTower': 5, 'SplitTower': 3}
+        self.tower_cost = {'BaseTower': 0, 'NormalTower': 50, 'FastTower': 70, 'SplitTower': 80}
         self.split_tower_targets = 3
         self.bullet_speed = 200
 
     def set_screen_sizes(self, screen_size):
         self.screen_size = screen_size
-

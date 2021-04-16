@@ -17,9 +17,9 @@ class BaseTower(pg.sprite.Sprite):
         self.is_clicked = False
 
         self.x, self.y = top_left
-        self.range = 0
-        self.damage = 0
-        self.attack_speed = 1
+        self.range = settings.tower_range[self.__class__.__name__]
+        self.damage = settings.tower_damage[self.__class__.__name__]
+        self.attack_speed = settings.tower_attack_speed[self.__class__.__name__]
         self.attack_cooldown = 0
         self.hit_order = 'first'
 
@@ -54,12 +54,6 @@ class NormalTower(BaseTower):
                    load_image('towers/normal_tower_lvl2.png'),
                    load_image('towers/normal_tower_lvl3.png')]
 
-    def __init__(self, settings, top_left, size):
-        super(NormalTower, self).__init__(settings, top_left, size)
-        self.range = settings.normal_tower_range
-        self.attack_speed = settings.normal_tower_attack_speed
-        self.damage = settings.normal_tower_damage
-
     def shoot(self, enemies):
         if not self.attack_cooldown:
             if self.hit_order == 'first':
@@ -77,12 +71,6 @@ class FastTower(BaseTower):
     tower_image = [load_image('towers/fast_tower_lvl1.png'),
                    load_image('towers/fast_tower_lvl2.png'),
                    load_image('towers/fast_tower_lvl3.png')]
-
-    def __init__(self, settings, top_left, size):
-        super(FastTower, self).__init__(settings, top_left, size)
-        self.range = settings.fast_tower_range
-        self.attack_speed = settings.fast_tower_attack_speed
-        self.damage = settings.fast_tower_damage
 
     def shoot(self, enemies):
         if not self.attack_cooldown:
@@ -104,9 +92,6 @@ class SplitTower(BaseTower):
 
     def __init__(self, settings, top_left, size):
         super(SplitTower, self).__init__(settings, top_left, size)
-        self.range = settings.split_tower_range
-        self.attack_speed = settings.split_tower_attack_speed
-        self.damage = settings.split_tower_damage
         self.targets = settings.split_tower_targets
 
     def shoot(self, enemies: pg.sprite.Group):

@@ -9,6 +9,11 @@ BACKGROUND_IMAGES = [load_image(f'background/bg{i}.png') for i in range(1, 8)] +
     load_image('background/bg_blank.png')] * 50
 
 
+def generate_text_surface(settings):
+    font = pg.font.Font(None, 30)
+    return font.render(f'Money: {settings.money}', True, pg.Color('White'))
+
+
 def generate_map_board_list(level, settings):
     rows, cols = [int(n) for n in level[0].split(',')]
     board_list = [[None for _ in range(cols)] for _ in range(rows)]

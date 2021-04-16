@@ -10,7 +10,7 @@ from classes.board import MapBoard
 from settings import Settings
 from functions import load_level
 from game_functions import create_background_surface, generate_map_board_list, add_buttons
-from game_functions import generate_enemy_waves
+from game_functions import generate_enemy_waves, generate_text_surface
 
 
 def terminate():
@@ -77,12 +77,11 @@ def main_loop():
                 if event.key == pg.K_ESCAPE:
                     if menu(screen):
                         return True
-                if event.key == pg.K_p:
-                    settings.wave_start = True
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 3:
                     settings.selected_tower = None
             elif event.type == ENEMY_SPAWN_EVENT:
+                print('Money:', settings.money)
                 if current_wave and settings.wave_start:
                     enemy = current_wave.pop(0)
                     enemy(30, 30, 1, settings, map_board)
@@ -92,6 +91,7 @@ def main_loop():
 
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))
+        screen.blit(generate_text_surface(settings), (10, 10))
         map_board.update(events.copy(), screen, placing_tower=settings.selected_tower)
 
         settings.all_sprites.draw(screen)

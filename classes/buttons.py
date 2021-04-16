@@ -34,6 +34,7 @@ class TowerButton(Button):
     def __init__(self, left_top, size, tower, settings):
         super(TowerButton, self).__init__(left_top, size, settings)
         self.tower = tower
+        self.cost = settings.tower_cost[tower.__name__]
         w, h = self.image.get_size()
         img = pg.transform.scale(self.tower.tower_image[0], (int(w * 0.70), int(h * 0.70)))
         self.image.blit(img, (int(w * 0.15), int(h * 0.15)))
@@ -51,7 +52,11 @@ class TowerButton(Button):
                 self.click()
 
     def click(self, *args, **kwargs):
-        self.settings.selected_tower = self.tower
+        if self.settings.money >= self.cost:
+            self.settings.selected_tower = self.tower
+        else:
+            print(f'Not enough money to buy {self.tower.__name__}.')
+            print(f'You need {self.cost - self.settings.money} more points.')
 
 
 class StartWaveButton(Button):
