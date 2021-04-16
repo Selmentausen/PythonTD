@@ -6,7 +6,7 @@ screen = pg.display.set_mode((1024, 768))
 clock = pg.time.Clock()
 
 from classes import towers
-from classes.board import MapBoard
+from classes.board import Board
 from settings import Settings
 from functions import load_level
 from game_functions import create_background_surface, generate_map_board_list, add_buttons
@@ -60,11 +60,10 @@ def main_loop():
     # pg.time.set_timer(TEST_EVENT, 10)
 
     board_list = generate_map_board_list(load_level('1.txt'), settings)
-    map_board = MapBoard(board_list, settings)
+    map_board = Board(board_list, settings)
     add_buttons(screen, settings, [towers.NormalTower, towers.FastTower, towers.SplitTower])
 
-    all_waves = generate_enemy_waves(load_level('1.txt'))
-    current_wave = all_waves.pop(0)
+    settings.enemy_waves = generate_enemy_waves(load_level('1.txt'))
 
     background_surface = create_background_surface(screen.get_size())
 
@@ -82,12 +81,6 @@ def main_loop():
                     settings.selected_tower = None
             elif event.type == ENEMY_SPAWN_EVENT:
                 print('Money:', settings.money)
-                if current_wave and settings.wave_start:
-                    enemy = current_wave.pop(0)
-                    enemy(30, 30, 1, settings, map_board)
-                elif all_waves and not current_wave:
-                    current_wave = all_waves.pop(0)
-                    settings.wave_start = False
 
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))

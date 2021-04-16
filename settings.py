@@ -10,6 +10,8 @@ class Settings:
 
         # Game logic
         self.wave_start = False
+        self.enemy_waves = []
+        self.current_wave = []
         self.selected_tower = None
         self.money = 150
 
@@ -23,6 +25,9 @@ class Settings:
 
         # Enemy settings
         self.kill_reward = 5
+        self.enemy_base_hp = 30
+        self.enemy_base_speed = 100
+        self.enemy_level = 1
         self.enemy_hp_multiplier = {'RhombusEnemy': 1, 'SquareEnemy': 1.5, 'CircleEnemy': 0.5}
         self.enemy_speed_multiplier = {'RhombusEnemy': 1, 'SquareEnemy': 0.5, 'CircleEnemy': 1.5}
         self.jiggle_intensity = 0.3

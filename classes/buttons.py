@@ -63,7 +63,9 @@ class StartWaveButton(Button):
         self._change_image(self.button_images['button'], self.button_images['button_play'])
 
     def click(self):
-        self.settings.wave_start = True
+        if not self.settings.current_wave and self.settings.enemy_waves:
+            self.settings.current_wave = self.settings.enemy_waves.pop(0)
+            self.settings.wave_start = True
 
 
 class SellTowerButton(Button):

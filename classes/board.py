@@ -5,7 +5,9 @@ from . import towers
 
 
 class Board:
-    def __init__(self, board_list, screen_size, settings):
+    def __init__(self, board_list, settings):
+        screen_width, screen_height = settings.screen_size
+        screen_size = screen_width, screen_height * settings.map_height
         self.screen_size = screen_size
         self.settings = settings
         self.board = board_list
@@ -13,6 +15,9 @@ class Board:
         self.cols = len(board_list[0]) if board_list else 0
         self.cell_x_size = int(self.screen_size[0] / (self.cols + 2))
         self.cell_y_size = int(self.screen_size[1] / (self.rows + 2))
+        self.enemy_start_cell = None
+        self.enemy_destination_cell = None
+        self._init_roads()
 
     def render(self, screen: pg.Surface, draw_occupied=False):
         for i in range(self.rows):
@@ -26,6 +31,12 @@ class Board:
 
     def update(self, events, screen, placing_tower=None):
         self.render(screen, draw_occupied=bool(placing_tower))
+
+        if self.settings.wave_start:
+            if self.settings.current_wave:
+                self.spawn_enemy()
+            else:
+                self.settings.wave_start = False
 
         for event in events:
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -79,16 +90,15 @@ class Board:
         except TypeError:
             pass
 
-
-class MapBoard(Board):
-    def __init__(self, board_list, settings):
-        screen_width, screen_height = settings.screen_size
-        screen_size = screen_width, screen_height * settings.map_height
-        super(MapBoard, self).__init__(board_list, screen_size, settings)
-
-        self.enemy_start_cell = None
-        self.enemy_destination_cell = None
-        self._init_roads()
+    def spawn_enemy(self):
+        spawn_cell_rect = pg.Rect(self.get_cell_top_left_coordinates(*self.enemy_start_cell),
+                                  (self.cell_x_size, self.cell_y_size))
+        for enemy in self.settings.enemy_sprites:
+            if spawn_cell_rect.collidepoint(enemy.rect.center):
+                return
+        new_enemy = self.settings.current_wave.pop(0)
+        new_enemy(self.settings.enemy_base_hp, self.settings.enemy_base_speed, self.settings.enemy_level, self.settings,
+                  self)
 
     def _init_roads(self):
         for i in range(self.rows):
@@ -100,29 +110,3 @@ class MapBoard(Board):
                         self.enemy_start_cell = i, j
                     elif isinstance(self.board[i][j], EnemyDestination):
                         self.enemy_destination_cell = i, j
-
-
-class BuyMenuBoard(Board):
-    def __init__(self, board_list, settings):
-        screen_width, screen_height = settings.screen_size
-        screen_size = screen_width, screen_height * settings.buy_menu_height
-        super(BuyMenuBoard, self).__init__(board_list, screen_size, settings)
-        self.board_offset_x, self.board_offset_y = 0, screen_height * settings.map_height
-        self.selected_tower = None
-
-    def get_cell_top_left_coordinates(self, row, col):
-        return self.board_offset_x + self.cell_x_size * (col + 1), self.board_offset_y + self.cell_y_size * (row + 1)
-
-    def get_cell_by_position(self, pos):
-        x, y = pos
-        row = int((y - self.cell_y_size - self.board_offset_y) // self.cell_y_size)
-        col = int((x - self.cell_x_size - self.board_offset_x) // self.cell_x_size)
-        if 0 <= col < self.cols and 0 <= row < self.rows:
-            return row, col
-
-    def mouse_click(self, event):
-        pos = self.get_cell_by_position(event.pos)
-        if pos:
-            obj = self.get_object_in_cell(*pos)
-            if issubclass(obj, BaseTower):
-                self.settings.selected_tower = obj if self.settings.selected_tower != obj else None

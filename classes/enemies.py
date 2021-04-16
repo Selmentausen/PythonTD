@@ -32,7 +32,7 @@ class EnemyBase(pg.sprite.Sprite):
         self.x, self.y = 0, 0
         self.hp = hp * settings.enemy_hp_multiplier[self.__class__.__name__]
         self.speed = speed * settings.enemy_speed_multiplier[self.__class__.__name__]
-        self.max_hp = hp
+        self.max_hp = self.hp
         self.level = enemy_level
         self.set_start_pos()
         self.hp_bar = self.update_health_bar()
