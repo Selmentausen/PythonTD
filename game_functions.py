@@ -1,6 +1,6 @@
 from classes.roads import ROAD_SYMBOLS
 from classes import enemies
-from classes.buttons import TowerButton
+from classes.buttons import TowerButton, StartWaveButton, SellTowerButton
 from functions import load_image
 from random import choice
 import pygame as pg
@@ -32,6 +32,10 @@ def add_buttons(screen, settings, tower_list):
     for i, tower in enumerate(tower_list):
         left_top = size[0] * (i + 1) + padding * (i + 1), buttons_screen[1]
         TowerButton(left_top, size, tower, settings)
+    left_top = size[0] * (i + 2) + padding * (i + 2), buttons_screen[1]
+    SellTowerButton(left_top, size, settings)
+    left_top = size[0] * (i + 3) + padding * (i + 3), buttons_screen[1]
+    StartWaveButton(left_top, size, settings)
 
 
 def generate_enemy_waves(level):

@@ -61,7 +61,6 @@ def main_loop():
 
     board_list = generate_map_board_list(load_level('1.txt'), settings)
     map_board = MapBoard(board_list, settings)
-    map_board.add_object_to_cell(towers.NormalTower, 2, 2)
     add_buttons(screen, settings, [towers.NormalTower, towers.FastTower, towers.SplitTower])
 
     all_waves = generate_enemy_waves(load_level('1.txt'))
@@ -80,6 +79,9 @@ def main_loop():
                         return True
                 if event.key == pg.K_p:
                     settings.wave_start = True
+            elif event.type == pg.MOUSEBUTTONDOWN:
+                if event.button == 3:
+                    settings.selected_tower = None
             elif event.type == ENEMY_SPAWN_EVENT:
                 if current_wave and settings.wave_start:
                     enemy = current_wave.pop(0)

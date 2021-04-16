@@ -4,11 +4,6 @@ import pygame as pg
 from math import hypot
 from random import sample
 
-BULLET_IMAGES = {
-    'normal_bullet': load_image('towers/normal_bullet.png'),
-    'big_bullet': load_image('towers/big_bullet.png')
-}
-
 
 class BaseTower(pg.sprite.Sprite):
     tower_image = [load_image('towers/ArrowTower.png')]
@@ -122,10 +117,15 @@ class SplitTower(BaseTower):
 
 
 class Bullet(pg.sprite.Sprite):
+    bullet_image = {
+        'normal_bullet': load_image('towers/normal_bullet.png'),
+        'big_bullet': load_image('towers/big_bullet.png')
+    }
+
     def __init__(self, start, enemy, damage, settings):
         super(Bullet, self).__init__(settings.all_sprites, settings.bullet_sprites)
         self.settings = settings
-        self.image = BULLET_IMAGES['big_bullet']
+        self.image = self.bullet_image['big_bullet']
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = start
         self.speed = settings.bullet_speed
