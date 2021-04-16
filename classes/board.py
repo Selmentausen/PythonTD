@@ -14,18 +14,6 @@ class Board:
         self.cell_x_size = int(self.screen_size[0] / (self.cols + 2))
         self.cell_y_size = int(self.screen_size[1] / (self.rows + 2))
 
-    def update(self, events, screen, placing_tower=None):
-        self.render(screen, draw_occupied=bool(placing_tower))
-
-        for event in events:
-            if event.type == pg.MOUSEBUTTONDOWN:
-                cell_pos = self.get_cell_by_position(event.pos)
-                if cell_pos:
-                    if placing_tower:
-                        self.add_tower_to_cell(placing_tower, *cell_pos)
-                    else:
-                        self.mouse_click(cell_pos)
-
     def render(self, screen: pg.Surface, draw_occupied=False):
         for i in range(self.rows):
             for j in range(self.cols):
@@ -35,6 +23,20 @@ class Board:
                     color = pg.Color('White')
                 pg.draw.rect(screen, color, [*self.get_cell_top_left_coordinates(i, j),
                                              self.cell_x_size, self.cell_y_size], 1)
+
+    def update(self, events, screen, placing_tower=None):
+        self.render(screen, draw_occupied=bool(placing_tower))
+
+        for event in events:
+            if event.type == pg.MOUSEBUTTONDOWN:
+                cell_pos = self.get_cell_by_position(event.pos)
+                if cell_pos:
+                    if placing_tower == 'sell':
+                        self.sell_tower(*cell_pos)
+                    elif placing_tower:
+                        self.add_tower_to_cell(placing_tower, *cell_pos)
+                    else:
+                        self.mouse_click(cell_pos)
 
     def mouse_click(self, cell_pos, tower=None):
         obj = self.get_object_in_cell(*cell_pos)
@@ -65,6 +67,17 @@ class Board:
         self.board[row][col] = tower(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size))
         self.settings.selected_tower = None
         self.settings.money -= self.settings.tower_cost[tower.__name__]
+
+    def sell_tower(self, row, col):
+        tower = self.board[row][col]
+        try:
+            if issubclass(tower.__class__, BaseTower):
+                self.settings.money += self.settings.tower_cost[tower.__class__.__name__] // 2
+                tower.kill()
+                self.board[row][col] = None
+                self.settings.selected_tower = None
+        except TypeError:
+            pass
 
 
 class MapBoard(Board):

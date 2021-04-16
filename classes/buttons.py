@@ -17,8 +17,12 @@ class Button(pg.sprite.Sprite):
 
     def update(self, *args, **kwargs) -> None:
         mouse_pos = kwargs.get('mouse_pos', None)
+        self.on_pressed_update_image()
         if self.rect.collidepoint(mouse_pos) and pg.mouse.get_pressed(3)[0]:
             self.click()
+
+    def on_pressed_update_image(self):
+        pass
 
     def _change_image(self, base_image, inner_image):
         self.image = pg.transform.scale(base_image, self.rect.size)
@@ -39,17 +43,11 @@ class TowerButton(Button):
         img = pg.transform.scale(self.tower.tower_image[0], (int(w * 0.70), int(h * 0.70)))
         self.image.blit(img, (int(w * 0.15), int(h * 0.15)))
 
-    def update(self, *args, **kwargs) -> None:
-        mouse_pos = kwargs.get('mouse_pos', None)
-
+    def on_pressed_update_image(self):
         if self.settings.selected_tower == self.tower:
             self._change_image(self.button_images['button_pressed'], self.tower.tower_image[0])
         else:
             self._change_image(self.button_images['button'], self.tower.tower_image[0])
-
-        if self.rect.collidepoint(mouse_pos):
-            if pg.mouse.get_pressed(3)[0]:
-                self.click()
 
     def click(self, *args, **kwargs):
         if self.settings.money >= self.cost:
@@ -72,3 +70,12 @@ class SellTowerButton(Button):
     def __init__(self, left_top, size, settings):
         super(SellTowerButton, self).__init__(left_top, size, settings)
         self._change_image(self.button_images['button'], self.button_images['button_sell'])
+
+    def on_pressed_update_image(self):
+        if self.settings.selected_tower == 'sell':
+            self._change_image(self.button_images['button_pressed'], self.button_images['button_sell'])
+        else:
+            self._change_image(self.button_images['button'], self.button_images['button_sell'])
+
+    def click(self):
+        self.settings.selected_tower = 'sell'

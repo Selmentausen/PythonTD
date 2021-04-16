@@ -32,6 +32,7 @@ class Settings:
         self.tower_attack_speed = {'BaseTower': 0, 'NormalTower': 1, 'FastTower': 0.4, 'SplitTower': 1.5}
         self.tower_damage = {'BaseTower': 0, 'NormalTower': 10, 'FastTower': 5, 'SplitTower': 3}
         self.tower_cost = {'BaseTower': 0, 'NormalTower': 50, 'FastTower': 70, 'SplitTower': 80}
+        self.tower_refund = 0.75
         self.split_tower_targets = 3
         self.bullet_speed = 200
 
