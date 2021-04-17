@@ -42,6 +42,14 @@ class TowerButton(Button):
         w, h = self.image.get_size()
         img = pg.transform.scale(self.tower.tower_image[0], (int(w * 0.70), int(h * 0.70)))
         self.image.blit(img, (int(w * 0.15), int(h * 0.15)))
+        font = pg.font.Font(None, 30)
+        self.cost_text = font.render(str(settings.tower_cost[self.tower.__name__]), True, pg.Color('Red'))
+
+    def _change_image(self, base_image, inner_image):
+        super(TowerButton, self)._change_image(base_image, inner_image)
+        w, h = self.rect.width // 2 - self.cost_text.get_width() // 2, self.rect.height * 0.02
+        self.image.blit(self.cost_text, (w, h))
+
 
     def on_pressed_update_image(self):
         if self.settings.selected_tower == self.tower:

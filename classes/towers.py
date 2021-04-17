@@ -10,6 +10,7 @@ class BaseTower(pg.sprite.Sprite):
 
     def __init__(self, settings, top_left, size):
         super(BaseTower, self).__init__(settings.all_sprites, settings.tower_sprites)
+
         self.image = pg.transform.scale(self.tower_image[0], size)
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left

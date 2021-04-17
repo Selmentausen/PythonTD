@@ -1,7 +1,6 @@
 import pygame as pg
 from .roads import BaseRoad, EnemySpawn, EnemyDestination
 from .towers import BaseTower
-from . import towers
 
 
 class Board:
@@ -49,7 +48,7 @@ class Board:
                     else:
                         self.mouse_click(cell_pos)
 
-    def mouse_click(self, cell_pos, tower=None):
+    def mouse_click(self, cell_pos):
         obj = self.get_object_in_cell(*cell_pos)
         if obj:
             try:
@@ -70,8 +69,8 @@ class Board:
     def get_cell_top_left_coordinates(self, row: int, col: int) -> (int, int):
         return self.cell_x_size * (col + 1), self.cell_y_size * (row + 1)
 
-    def add_tower_to_cell(self, tower, row, col, replace=False):
-        if not replace and self.board[row][col]:
+    def add_tower_to_cell(self, tower, row, col):
+        if self.board[row][col]:
             print('cell occupied')
             return
         object_top_left = self.get_cell_top_left_coordinates(row, col)

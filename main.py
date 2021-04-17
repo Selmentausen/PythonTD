@@ -52,19 +52,14 @@ def menu(surface):
 def main_loop():
     settings = Settings()
     settings.set_screen_sizes(screen.get_size())
-    ENEMY_SPAWN_EVENT = pg.USEREVENT + 10
-    # TEST_EVENT = pg.USEREVENT + 15
 
     delta_time = clock.tick() / 1000
-    pg.time.set_timer(ENEMY_SPAWN_EVENT, 1500)
-    # pg.time.set_timer(TEST_EVENT, 10)
-
     board_list = generate_map_board_list(load_level('1.txt'), settings)
     map_board = Board(board_list, settings)
-    add_buttons(screen, settings, [towers.NormalTower, towers.FastTower, towers.SplitTower])
 
     settings.enemy_waves = generate_enemy_waves(load_level('1.txt'))
 
+    add_buttons(screen, settings, [towers.NormalTower, towers.FastTower, towers.SplitTower])
     background_surface = create_background_surface(screen.get_size())
 
     while True:
@@ -79,14 +74,12 @@ def main_loop():
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 3:
                     settings.selected_tower = None
-            elif event.type == ENEMY_SPAWN_EVENT:
-                print('Money:', settings.money)
 
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))
         screen.blit(generate_text_surface(settings), (10, 10))
-        map_board.update(events.copy(), screen, placing_tower=settings.selected_tower)
 
+        map_board.update(events.copy(), screen, placing_tower=settings.selected_tower)
         settings.all_sprites.draw(screen)
         settings.all_sprites.update(delta_time=delta_time, screen=screen, mouse_pos=pg.mouse.get_pos())
 
