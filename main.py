@@ -20,19 +20,35 @@ def terminate():
 
 def start_screen(surface):
     running = True
+    w, h = surface.get_size()
+    background_surface = create_background_surface((w, h))
+    title = pg.font.Font(None, 150).render('Python TD', True, pg.Color('White'))
+    info_line = pg.font.Font(None, 80).render('Press any key to START', True, pg.Color('White'))
+    background_surface.blit(title, (w // 2 - title.get_width() // 2, h * 0.2))
+    background_surface.blit(info_line, (w // 2 - info_line.get_width() // 2, h * 0.6))
+
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 terminate()
             if event.type == pg.KEYDOWN:
                 running = False
-        surface.fill(pg.Color('Red'))
+        surface.fill(pg.Color('Black'))
+        screen.blit(background_surface, (0, 0))
         pg.display.flip()
         clock.tick()
 
 
 def menu(surface):
     running = True
+    w, h = surface.get_size()
+    background_surface = create_background_surface((w, h))
+    instructions = ["Press 'ESCAPE' to RETURN", "Press 'R' to RESTART", "Press 'Q' to QUIT"]
+    font = pg.font.Font(None, 70)
+    for i, line in enumerate(instructions):
+        line_surface = font.render(line, True, pg.Color('White'))
+        background_surface.blit(line_surface, (w // 2 - line_surface.get_width() // 2, h * (0.3 + 0.1 * i)))
+
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -44,13 +60,24 @@ def menu(surface):
                     terminate()
                 elif event.key == pg.K_r:
                     return True
-        surface.fill(pg.Color('Blue'))
+        surface.fill(pg.Color('Black'))
+        screen.blit(background_surface, (0, 0))
         pg.display.flip()
         clock.tick()
 
 
 def game_over(surface):
     running = True
+    w, h = surface.get_size()
+    background_surface = create_background_surface((w, h))
+    title = pg.font.Font(None, 150).render('GAME OVER', True, pg.Color('Red'))
+    background_surface.blit(title, (w // 2 - title.get_width() // 2, h * 0.2))
+    instructions = ["Press 'R' to RESTART", "Press 'Q' to QUIT"]
+    font = pg.font.Font(None, 70)
+    for i, line in enumerate(instructions):
+        line_surface = font.render(line, True, pg.Color('White'))
+        background_surface.blit(line_surface, (w // 2 - line_surface.get_width() // 2, h * (0.5 + 0.1 * i)))
+
     while running:
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -60,7 +87,8 @@ def game_over(surface):
                     terminate()
                 elif event.key == pg.K_r:
                     return True
-        surface.fill(pg.Color('Purple'))
+        surface.fill(pg.Color('Black'))
+        screen.blit(background_surface, (0, 0))
         pg.display.flip()
         clock.tick()
 

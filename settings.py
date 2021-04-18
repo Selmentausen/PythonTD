@@ -14,7 +14,7 @@ class Settings:
         self.current_wave = []
         self.selected_tower = None
         self.money = 150
-        self.lives = 20
+        self.lives = 2
 
         # Sprite groups
         self.all_sprites = pg.sprite.Group()
@@ -27,7 +27,7 @@ class Settings:
         # Enemy settings
         self.kill_reward = 5
         self.enemy_base_hp = 30
-        self.enemy_base_speed = 100
+        self.enemy_base_speed = 500
         self.enemy_level = 1
         self.enemy_hp_multiplier = {'RhombusEnemy': 1, 'SquareEnemy': 1.5, 'CircleEnemy': 0.5}
         self.enemy_speed_multiplier = {'RhombusEnemy': 1, 'SquareEnemy': 0.5, 'CircleEnemy': 1.5}
