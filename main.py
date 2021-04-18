@@ -10,7 +10,7 @@ from classes.board import Board
 from settings import Settings
 from functions import load_level
 from game_functions import create_background_surface, generate_map_board_list, add_buttons
-from game_functions import generate_enemy_waves, generate_text_surface
+from game_functions import generate_enemy_waves, add_text_info
 
 
 def terminate():
@@ -49,6 +49,22 @@ def menu(surface):
         clock.tick()
 
 
+def game_over(surface):
+    running = True
+    while running:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                terminate()
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_q:
+                    terminate()
+                elif event.key == pg.K_r:
+                    return True
+        surface.fill(pg.Color('Purple'))
+        pg.display.flip()
+        clock.tick()
+
+
 def main_loop():
     settings = Settings()
     settings.set_screen_sizes(screen.get_size())
@@ -75,9 +91,12 @@ def main_loop():
                 if event.button == 3:
                     settings.selected_tower = None
 
+        if settings.lives <= 0:
+            return game_over(screen)
+
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))
-        screen.blit(generate_text_surface(settings), (10, 10))
+        add_text_info(screen, settings)
 
         map_board.update(events.copy(), screen, placing_tower=settings.selected_tower)
         settings.all_sprites.draw(screen)

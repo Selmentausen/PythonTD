@@ -9,9 +9,10 @@ BACKGROUND_IMAGES = [load_image(f'background/bg{i}.png') for i in range(1, 8)] +
     load_image('background/bg_blank.png')] * 50
 
 
-def generate_text_surface(settings):
+def add_text_info(screen, settings):
     font = pg.font.Font(None, 30)
-    return font.render(f'Money: {settings.money}', True, pg.Color('White'))
+    screen.blit(font.render(f'Money: {settings.money}', True, pg.Color('White')), (10, 10))
+    screen.blit(font.render(f'Lives: {settings.lives}', True, pg.Color('White')), (10, 40))
 
 
 def generate_map_board_list(level, settings):

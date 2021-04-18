@@ -67,9 +67,9 @@ class EnemyBase(pg.sprite.Sprite):
         cell_x_center = x + self.board.cell_x_size // 2
         cell_y_center = y + self.board.cell_y_size // 2
         if not isinstance(road, roads.BaseRoad):
-            self.kill()
+            self.die()
         elif isinstance(road, roads.EnemyDestination):
-            self.kill()
+            self.die(at_finish=True)
         else:
             road_name = road.__class__.__name__
             x_dir, y_dir = ROAD_DIRECTIONS[road_name]
@@ -105,8 +105,11 @@ class EnemyBase(pg.sprite.Sprite):
             self.x += move[0]
             self.y += move[1]
 
-    def die(self):
-        if self.alive():
+    def die(self, at_finish=False):
+        if at_finish:
+            self.settings.lives -= 1
+            self.kill()
+        elif self.alive():
             self.settings.money += self.settings.kill_reward
             self.kill()
 
