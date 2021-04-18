@@ -6,7 +6,8 @@ class Button(pg.sprite.Sprite):
     button_images = {'button': load_image('buttons/button.png'),
                      'button_pressed': load_image('buttons/button_pressed.png'),
                      'button_play': load_image('buttons/button_play.png'),
-                     'button_sell': load_image('buttons/button_sell.png')}
+                     'button_sell': load_image('buttons/button_sell.png'),
+                     'button_upgrade': load_image('buttons/button_upgrade.png')}
 
     def __init__(self, left_top, size, settings):
         super(Button, self).__init__(settings.all_sprites, settings.button_sprites)
@@ -42,14 +43,22 @@ class TowerButton(Button):
         w, h = self.image.get_size()
         img = pg.transform.scale(self.tower.tower_image[0], (int(w * 0.70), int(h * 0.70)))
         self.image.blit(img, (int(w * 0.15), int(h * 0.15)))
-        font = pg.font.Font(None, 30)
-        self.cost_text = font.render(str(settings.tower_cost[self.tower.__name__]), True, pg.Color('Red'))
+        font = pg.font.Font(None, 20)
+        self.cost_text = font.render(f'lvl1: {settings.tower_cost[self.tower.__name__]}',
+                                     True, pg.Color('Yellow'))
+        self.lvl2_upgrade_cost = font.render(f'lvl2: {settings.tower_upgrade_cost[self.tower.__name__][0]}',
+                                             True, pg.Color('Red'))
+
+        self.lvl3_upgrade_cost = font.render(f'lvl3: {settings.tower_upgrade_cost[self.tower.__name__][1]}',
+                                             True, pg.Color('White'))
 
     def _change_image(self, base_image, inner_image):
         super(TowerButton, self)._change_image(base_image, inner_image)
         w, h = self.rect.width // 2 - self.cost_text.get_width() // 2, self.rect.height * 0.02
         self.image.blit(self.cost_text, (w, h))
-
+        self.image.blit(self.lvl2_upgrade_cost, (5, self.rect.height * 0.8))
+        self.image.blit(self.lvl3_upgrade_cost,
+                        (self.rect.width - self.lvl3_upgrade_cost.get_width() - 5, self.rect.height * 0.8))
 
     def on_pressed_update_image(self):
         if self.settings.selected_tower == self.tower:
@@ -63,6 +72,21 @@ class TowerButton(Button):
         else:
             print(f'Not enough money to buy {self.tower.__name__}.')
             print(f'You need {self.cost - self.settings.money} more points.')
+
+
+class UpgradeTowerButton(Button):
+    def __init__(self, left_top, size, settings):
+        super(UpgradeTowerButton, self).__init__(left_top, size, settings)
+        self._change_image(self.button_images['button'], self.button_images['button_upgrade'])
+
+    def on_pressed_update_image(self):
+        if self.settings.selected_tower == 'upgrade':
+            self._change_image(self.button_images['button_pressed'], self.button_images['button_upgrade'])
+        else:
+            self._change_image(self.button_images['button'], self.button_images['button_upgrade'])
+
+    def click(self):
+        self.settings.selected_tower = 'upgrade'
 
 
 class StartWaveButton(Button):

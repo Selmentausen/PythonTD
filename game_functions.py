@@ -1,6 +1,6 @@
 from classes.roads import ROAD_SYMBOLS
 from classes import enemies
-from classes.buttons import TowerButton, StartWaveButton, SellTowerButton
+from classes.buttons import TowerButton, StartWaveButton, SellTowerButton, UpgradeTowerButton
 from functions import load_image
 from random import choice
 import pygame as pg
@@ -30,7 +30,7 @@ def generate_map_board_list(level, settings):
 def add_buttons(screen, settings, tower_list):
     w, h = screen.get_size()
     buttons_screen = 0, int(h * settings.map_height), w, h
-    amount = len(tower_list) + 2
+    amount = len(tower_list) + 3
     size = [buttons_screen[2] // (amount + 2), (buttons_screen[3] - buttons_screen[1]) // 2]
     padding = size[0] // 10
     size[0] -= padding * (amount - 1) // amount
@@ -39,8 +39,10 @@ def add_buttons(screen, settings, tower_list):
         left_top = size[0] * (i + 1) + padding * (i + 1), buttons_screen[1]
         TowerButton(left_top, size, tower, settings)
     left_top = size[0] * (i + 2) + padding * (i + 2), buttons_screen[1]
-    SellTowerButton(left_top, size, settings)
+    UpgradeTowerButton(left_top, size, settings)
     left_top = size[0] * (i + 3) + padding * (i + 3), buttons_screen[1]
+    SellTowerButton(left_top, size, settings)
+    left_top = size[0] * (i + 4) + padding * (i + 4), buttons_screen[1]
     StartWaveButton(left_top, size, settings)
 
 

@@ -43,6 +43,8 @@ class Board:
                 if cell_pos:
                     if placing_tower == 'sell':
                         self.sell_tower(*cell_pos)
+                    elif placing_tower == 'upgrade':
+                        self.upgrade_tower(*cell_pos)
                     elif placing_tower:
                         self.add_tower_to_cell(placing_tower, *cell_pos)
                     else:
@@ -85,6 +87,15 @@ class Board:
                 self.settings.money += self.settings.tower_cost[tower.__class__.__name__] // 2
                 tower.kill()
                 self.board[row][col] = None
+                self.settings.selected_tower = None
+        except TypeError:
+            pass
+
+    def upgrade_tower(self, row, col):
+        tower = self.board[row][col]
+        try:
+            if issubclass(tower.__class__, BaseTower):
+                tower.upgrade()
                 self.settings.selected_tower = None
         except TypeError:
             pass

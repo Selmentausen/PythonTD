@@ -12,6 +12,7 @@ class BaseTower(pg.sprite.Sprite):
         super(BaseTower, self).__init__(settings.all_sprites, settings.tower_sprites)
 
         self.image = pg.transform.scale(self.tower_image[0], size)
+        self.size = size
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
         self.settings = settings
@@ -22,6 +23,7 @@ class BaseTower(pg.sprite.Sprite):
         self.damage = settings.tower_damage[self.__class__.__name__]
         self.attack_speed = settings.tower_attack_speed[self.__class__.__name__]
         self.attack_cooldown = 0
+        self.level = 1
         self.hit_order = 'first'
 
     def update(self, *args, **kwargs) -> None:
@@ -49,6 +51,17 @@ class BaseTower(pg.sprite.Sprite):
     def clicked(self):
         self.is_clicked = not self.is_clicked
 
+    def upgrade(self):
+        if self.level < 3 \
+                and self.settings.money >= self.settings.tower_upgrade_cost[self.__class__.__name__][self.level - 1]:
+            self.level += 1
+            self.image = pg.transform.scale(self.tower_image[self.level - 1], self.size)
+            self.upgrade_stats()
+            self.settings.money -= self.settings.tower_upgrade_cost[self.__class__.__name__][self.level - 2]
+
+    def upgrade_stats(self):
+        pass
+
 
 class NormalTower(BaseTower):
     tower_image = [load_image('towers/normal_tower_lvl1.png'),
@@ -66,6 +79,10 @@ class NormalTower(BaseTower):
                 enemy = min(enemies, key=lambda obj: abs(hypot(*self.rect.center) - hypot(*enemy.rect.center)))
             Bullet(self.rect.center, enemy, self.damage, self.settings)
             self.attack_cooldown = self.attack_speed
+
+    def upgrade_stats(self):
+        self.damage = int(self.damage * 2)
+        self.range = int(self.range * 1.3)
 
 
 class FastTower(BaseTower):
@@ -85,6 +102,11 @@ class FastTower(BaseTower):
             Bullet(self.rect.center, enemy, self.damage, self.settings)
             self.attack_cooldown = self.attack_speed
 
+    def upgrade_stats(self):
+        self.damage = int(self.damage * 1.2)
+        self.attack_speed = self.attack_speed * 0.8
+        self.range = int(self.range * 1.1)
+
 
 class SplitTower(BaseTower):
     tower_image = [load_image('towers/split_tower_lvl1.png'),
@@ -100,6 +122,11 @@ class SplitTower(BaseTower):
             for enemy in sample(enemies, k=min(len(enemies), self.targets)):
                 Bullet(self.rect.center, enemy, self.damage, self.settings)
             self.attack_cooldown = self.attack_speed
+
+    def upgrade_stats(self):
+        self.targets += 1
+        self.damage = int(self.damage * 1.5)
+        self.range = int(self.range * 1.2)
 
 
 class Bullet(pg.sprite.Sprite):
