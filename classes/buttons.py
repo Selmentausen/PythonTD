@@ -97,6 +97,7 @@ class StartWaveButton(Button):
     def click(self):
         if not self.settings.current_wave and self.settings.enemy_waves:
             self.settings.current_wave = self.settings.enemy_waves.pop(0)
+            self.settings.enemy_level += 1
             self.settings.wave_start = True
 
 
