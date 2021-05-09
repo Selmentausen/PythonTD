@@ -1,5 +1,6 @@
 import pygame as pg
 import sys
+import os
 
 pg.init()
 screen = pg.display.set_mode((1024, 768))
@@ -59,7 +60,7 @@ def menu(surface):
                 elif event.key == pg.K_q:
                     terminate()
                 elif event.key == pg.K_r:
-                    return True
+                    return 'restart'
         surface.fill(pg.Color('Black'))
         screen.blit(background_surface, (0, 0))
         pg.display.flip()
@@ -86,22 +87,49 @@ def game_over(surface):
                 if event.key == pg.K_q:
                     terminate()
                 elif event.key == pg.K_r:
-                    return True
+                    return 'restart'
         surface.fill(pg.Color('Black'))
         screen.blit(background_surface, (0, 0))
         pg.display.flip()
         clock.tick()
 
 
-def main_loop():
+def game_win(surface):
+    running = True
+    w, h = surface.get_size()
+    background_surface = create_background_surface((w, h))
+    title = pg.font.Font(None, 150).render('YOU WIN!!!', True, pg.Color('green'))
+    background_surface.blit(title, (w // 2 - title.get_width() // 2, h * 0.2))
+    instructions = ["Press ANY KEY to QUITE"]
+    font = pg.font.Font(None, 70)
+    for i, line in enumerate(instructions):
+        line_surface = font.render(line, True, pg.Color('White'))
+        background_surface.blit(line_surface, (w // 2 - line_surface.get_width() // 2, h * (0.5 + 0.1 * i)))
+
+    while running:
+        for event in pg.event.get():
+            if event.type == pg.QUIT:
+                terminate()
+            if event.type == pg.KEYDOWN:
+                if event.key == pg.K_q:
+                    terminate()
+                elif event.key == pg.K_r:
+                    return 'restart'
+        surface.fill(pg.Color('Black'))
+        screen.blit(background_surface, (0, 0))
+        pg.display.flip()
+        clock.tick()
+
+
+def main_loop(level):
     settings = Settings()
     settings.set_screen_sizes(screen.get_size())
 
     delta_time = clock.tick() / 1000
-    board_list = generate_map_board_list(load_level('1.txt'), settings)
+    board_list = generate_map_board_list(load_level(level), settings)
     map_board = Board(board_list, settings)
 
-    settings.enemy_waves = generate_enemy_waves(load_level('1.txt'))
+    settings.enemy_waves = generate_enemy_waves(load_level(level))
 
     add_buttons(screen, settings, [towers.NormalTower, towers.FastTower, towers.SplitTower])
     background_surface = create_background_surface(screen.get_size())
@@ -114,13 +142,16 @@ def main_loop():
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
                     if menu(screen):
-                        return True
+                        return 'restart'
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 3:
                     settings.selected_tower = None
 
         if settings.lives <= 0:
             return game_over(screen)
+        # if no more waves left and no enemies alive change to next level
+        if not settings.enemy_waves and not settings.enemy_sprites.sprites():
+            return 'next_level'
 
         screen.fill(pg.Color('black'))
         screen.blit(background_surface, (0, 0))
@@ -136,6 +167,17 @@ def main_loop():
 
 if __name__ == '__main__':
     start_screen(screen)
-    while main_loop():
-        pass
+    levels = [lvl for lvl in os.listdir('data/maps') if lvl.split('.')[-1] == 'txt']
+    current_level = levels.pop(0)
+    while True:
+        result = main_loop(current_level)
+        if result == 'next_level':
+            if levels:
+                current_level = levels.pop(0)
+                continue
+            else:
+                game_win(screen)
+        elif result == 'restart':
+            continue
+        break
     terminate()

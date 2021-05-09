@@ -9,12 +9,13 @@ class Settings:
         self.fps = 30
 
         # Game logic
+        self.next_level = False
         self.wave_start = False
         self.enemy_waves = []
         self.current_wave = []
         self.selected_tower = None
         self.money = 150
-        self.lives = 20
+        self.lives = 200
 
         # Sprite groups
         self.all_sprites = pg.sprite.Group()
@@ -37,7 +38,7 @@ class Settings:
         # Tower settings
         self.tower_range = {'BaseTower': 0, 'NormalTower': 200, 'FastTower': 150, 'SplitTower': 100}
         self.tower_attack_speed = {'BaseTower': 0, 'NormalTower': 1, 'FastTower': 0.4, 'SplitTower': 1.5}
-        self.tower_damage = {'BaseTower': 0, 'NormalTower': 1000, 'FastTower': 5, 'SplitTower': 3}
+        self.tower_damage = {'BaseTower': 0, 'NormalTower': 10, 'FastTower': 5, 'SplitTower': 5}
         self.tower_cost = {'BaseTower': 0, 'NormalTower': 50, 'FastTower': 70, 'SplitTower': 80}
         self.tower_upgrade_cost = {'BaseTower': [0, 0], 'NormalTower': [50, 100], 'FastTower': [50, 120],
                                    'SplitTower': [100, 150]}
