@@ -36,7 +36,7 @@ class Settings:
         self.difficulty_increment = 0.05
 
         # Tower settings
-        self.tower_range = {'BaseTower': 0, 'NormalTower': 200, 'FastTower': 150, 'SplitTower': 100}
+        self.tower_range = {'BaseTower': 0, 'NormalTower': 2, 'FastTower': 2, 'SplitTower': 1}
         self.tower_attack_speed = {'BaseTower': 0, 'NormalTower': 1, 'FastTower': 0.4, 'SplitTower': 1.5}
         self.tower_damage = {'BaseTower': 0, 'NormalTower': 10, 'FastTower': 5, 'SplitTower': 5}
         self.tower_cost = {'BaseTower': 0, 'NormalTower': 50, 'FastTower': 70, 'SplitTower': 80}

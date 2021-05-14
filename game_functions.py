@@ -66,10 +66,3 @@ def create_background_surface(screen_size):
         for j in range(screen_size[1] // 16):
             surface.blit(choice(BACKGROUND_IMAGES), (size_x * i, size_y * j))
     return surface
-
-
-def get_tower_range_surface(tower_range):
-    image = pg.transform.scale(load_image('towers/tower_radius.png'),
-                               (tower_range * 2, tower_range * 2))
-    image.set_alpha(100)
-    return image

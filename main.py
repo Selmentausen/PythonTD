@@ -141,7 +141,8 @@ def main_loop(level):
                 terminate()
             elif event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    if menu(screen):
+                    action = menu(screen)
+                    if action == 'restart':
                         return 'restart'
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 3:
@@ -149,7 +150,7 @@ def main_loop(level):
 
         if settings.lives <= 0:
             return game_over(screen)
-        # if no more waves left and no enemies alive change to next level
+
         if not settings.enemy_waves and not settings.enemy_sprites.sprites():
             return 'next_level'
 
@@ -165,19 +166,23 @@ def main_loop(level):
         delta_time = clock.tick(60) / 1000
 
 
-if __name__ == '__main__':
+def main():
     start_screen(screen)
     levels = [lvl for lvl in os.listdir('data/maps') if lvl.split('.')[-1] == 'txt']
     current_level = levels.pop(0)
+    game = main_loop(current_level)
     while True:
-        result = main_loop(current_level)
-        if result == 'next_level':
+        if game == 'next_level':
             if levels:
-                current_level = levels.pop(0)
-                continue
+                current_level = levels.pop()
+                game = main_loop(current_level)
             else:
                 game_win(screen)
-        elif result == 'restart':
-            continue
-        break
-    terminate()
+        elif game == 'restart':
+            game = main_loop(current_level)
+        else:
+            terminate()
+
+
+if __name__ == '__main__':
+    main()

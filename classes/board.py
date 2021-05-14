@@ -107,8 +107,7 @@ class Board:
             if spawn_cell_rect.collidepoint(enemy.rect.center):
                 return
         new_enemy = self.settings.current_wave.pop(0)
-        new_enemy(self.settings.enemy_base_hp, self.settings.enemy_base_speed, self.settings.enemy_level, self.settings,
-                  self)
+        new_enemy(self.settings, self)
 
     def _init_roads(self):
         for i in range(self.rows):

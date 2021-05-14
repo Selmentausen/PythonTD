@@ -22,7 +22,7 @@ ROAD_DIRECTIONS = {
 
 
 class EnemyBase(pg.sprite.Sprite):
-    def __init__(self, hp, speed, enemy_level, settings, board):
+    def __init__(self, settings, board):
         super(EnemyBase, self).__init__(settings.enemy_sprites, settings.all_sprites)
         self.image = ENEMY_IMAGES['placeholder_enemy']
         self.current_cell = board.enemy_start_cell
@@ -30,12 +30,12 @@ class EnemyBase(pg.sprite.Sprite):
         self.settings = settings
 
         self.x, self.y = 0, 0
-        self.hp = hp * settings.enemy_hp_multiplier[self.__class__.__name__] * (
-                1 + (settings.difficulty_increment * enemy_level - 1))
-        self.speed = speed * settings.enemy_speed_multiplier[self.__class__.__name__] * (
-                1 + settings.difficulty_increment * enemy_level)
+        self.hp = settings.enemy_base_hp * settings.enemy_hp_multiplier[self.__class__.__name__] * (
+                1 + (settings.difficulty_increment * (settings.enemy_level - 1)))
+        self.speed = settings.enemy_base_speed * settings.enemy_speed_multiplier[self.__class__.__name__] * (
+                1 + settings.difficulty_increment * settings.enemy_level)
         self.max_hp = self.hp
-        self.level = enemy_level
+        self.level = settings.enemy_level
         self.set_start_pos()
         self.hp_bar = self.update_health_bar()
 

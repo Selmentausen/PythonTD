@@ -1,5 +1,4 @@
 from functions import load_image
-from game_functions import get_tower_range_surface
 import pygame as pg
 from math import hypot
 from random import sample
@@ -7,6 +6,7 @@ from random import sample
 
 class BaseTower(pg.sprite.Sprite):
     tower_image = [load_image('towers/ArrowTower.png')]
+    radius_image = load_image('towers/tower_radius.png')
 
     def __init__(self, settings, top_left, size):
         super(BaseTower, self).__init__(settings.all_sprites, settings.tower_sprites)
@@ -29,21 +29,29 @@ class BaseTower(pg.sprite.Sprite):
     def update(self, *args, **kwargs) -> None:
         delta_time, screen = kwargs['delta_time'], kwargs['screen']
         self.attack_cooldown = max(self.attack_cooldown - delta_time, 0)
-        self.draw_tower_radius(screen)
-        enemies = self.get_enemies_in_range(self.settings.enemy_sprites)
+        if self.is_clicked:
+            self.draw_tower_radius(screen)
+        enemies = self.get_objects_in_range(self.settings.enemy_sprites)
         if enemies:
             self.shoot(enemies)
 
     def draw_tower_radius(self, screen):
-        if self.is_clicked:
-            screen.blit(get_tower_range_surface(self.range), (self.rect.centerx - self.range,
-                                                              self.rect.centery - self.range))
+        img = pg.transform.scale(self.radius_image,
+                                 (self.rect.size[0] * (self.range * 2 + 1),
+                                  self.rect.size[0] * (self.range * 2 + 1)))
+        img.set_alpha(100)
+        screen.blit(img, (self.rect.x - self.range * self.rect.size[0], self.rect.y - self.range * self.rect.size[1]))
 
-    def get_enemies_in_range(self, group: pg.sprite.Group):
-        origin = self.rect.center
-        # get enemies in tower range
-        return [enemy for enemy in group if
-                hypot(origin[0] - enemy.rect.center[0], origin[1] - enemy.rect.center[1]) <= self.range]
+    def get_objects_in_range(self, group):
+        objects = []
+        origin = self.rect
+        width, height = self.rect.size
+        top_left = origin[0] - width * self.range, origin[1] - height * self.range
+        bottom_right = origin[0] + width * (self.range + 1), origin[1] + height * (self.range + 1)
+        for obj in group:
+            if top_left[0] < obj.rect.centerx < bottom_right[0] and top_left[1] < obj.rect.centery < bottom_right[1]:
+                objects.append(obj)
+        return objects
 
     def shoot(self, enemies):
         pass
@@ -117,7 +125,7 @@ class SplitTower(BaseTower):
         super(SplitTower, self).__init__(settings, top_left, size)
         self.targets = settings.split_tower_targets
 
-    def shoot(self, enemies: pg.sprite.Group):
+    def shoot(self, enemies):
         if not self.attack_cooldown:
             for enemy in sample(enemies, k=min(len(enemies), self.targets)):
                 Bullet(self.rect.center, enemy, self.damage, self.settings)
