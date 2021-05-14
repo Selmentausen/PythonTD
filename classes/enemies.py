@@ -33,7 +33,7 @@ class EnemyBase(pg.sprite.Sprite):
         self.hp = settings.enemy_base_hp * settings.enemy_hp_multiplier[self.__class__.__name__] * (
                 1 + (settings.difficulty_increment * (settings.enemy_level - 1)))
         self.speed = settings.enemy_base_speed * settings.enemy_speed_multiplier[self.__class__.__name__] * (
-                1 + settings.difficulty_increment * settings.enemy_level)
+                1 + settings.difficulty_increment * (settings.enemy_level - 1))
         self.max_hp = self.hp
         self.level = settings.enemy_level
         self.set_start_pos()

@@ -146,7 +146,7 @@ def main_loop(level):
                         return 'restart'
             elif event.type == pg.MOUSEBUTTONDOWN:
                 if event.button == 3:
-                    settings.selected_tower = None
+                    settings.action = None
 
         if settings.lives <= 0:
             return game_over(screen)
@@ -158,7 +158,7 @@ def main_loop(level):
         screen.blit(background_surface, (0, 0))
         add_text_info(screen, settings)
 
-        map_board.update(events.copy(), screen, placing_tower=settings.selected_tower)
+        map_board.update(events.copy(), screen, action=settings.action)
         settings.all_sprites.draw(screen)
         settings.all_sprites.update(delta_time=delta_time, screen=screen, mouse_pos=pg.mouse.get_pos())
 

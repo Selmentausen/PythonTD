@@ -61,14 +61,14 @@ class TowerButton(Button):
                         (self.rect.width - self.lvl3_upgrade_cost.get_width() - 5, self.rect.height * 0.8))
 
     def on_pressed_update_image(self):
-        if self.settings.selected_tower == self.tower:
+        if self.settings.action == self.tower:
             self._change_image(self.button_images['button_pressed'], self.tower.tower_image[0])
         else:
             self._change_image(self.button_images['button'], self.tower.tower_image[0])
 
     def click(self, *args, **kwargs):
         if self.settings.money >= self.cost:
-            self.settings.selected_tower = self.tower
+            self.settings.action = self.tower
         else:
             print(f'Not enough money to buy {self.tower.__name__}.')
             print(f'You need {self.cost - self.settings.money} more points.')
@@ -80,13 +80,13 @@ class UpgradeTowerButton(Button):
         self._change_image(self.button_images['button'], self.button_images['button_upgrade'])
 
     def on_pressed_update_image(self):
-        if self.settings.selected_tower == 'upgrade':
+        if self.settings.action == 'upgrade':
             self._change_image(self.button_images['button_pressed'], self.button_images['button_upgrade'])
         else:
             self._change_image(self.button_images['button'], self.button_images['button_upgrade'])
 
     def click(self):
-        self.settings.selected_tower = 'upgrade'
+        self.settings.action = 'upgrade'
 
 
 class StartWaveButton(Button):
@@ -107,10 +107,10 @@ class SellTowerButton(Button):
         self._change_image(self.button_images['button'], self.button_images['button_sell'])
 
     def on_pressed_update_image(self):
-        if self.settings.selected_tower == 'sell':
+        if self.settings.action == 'sell':
             self._change_image(self.button_images['button_pressed'], self.button_images['button_sell'])
         else:
             self._change_image(self.button_images['button'], self.button_images['button_sell'])
 
     def click(self):
-        self.settings.selected_tower = 'sell'
+        self.settings.action = 'sell'

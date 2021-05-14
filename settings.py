@@ -13,9 +13,9 @@ class Settings:
         self.wave_start = False
         self.enemy_waves = []
         self.current_wave = []
-        self.selected_tower = None
+        self.action = None
         self.money = 150
-        self.lives = 200
+        self.lives = 20
 
         # Sprite groups
         self.all_sprites = pg.sprite.Group()

@@ -28,8 +28,8 @@ class Board:
                 pg.draw.rect(screen, color, [*self.get_cell_top_left_coordinates(i, j),
                                              self.cell_x_size, self.cell_y_size], 1)
 
-    def update(self, events, screen, placing_tower=None):
-        self.render(screen, draw_occupied=bool(placing_tower))
+    def update(self, events, screen, action=None):
+        self.render(screen, draw_occupied=bool(action))
 
         if self.settings.wave_start:
             if self.settings.current_wave:
@@ -41,14 +41,16 @@ class Board:
             if event.type == pg.MOUSEBUTTONDOWN:
                 cell_pos = self.get_cell_by_position(event.pos)
                 if cell_pos:
-                    if placing_tower == 'sell':
-                        self.sell_tower(*cell_pos)
-                    elif placing_tower == 'upgrade':
-                        self.upgrade_tower(*cell_pos)
-                    elif placing_tower:
-                        self.add_tower_to_cell(placing_tower, *cell_pos)
-                    else:
+                    if not action:
                         self.mouse_click(cell_pos)
+                    elif action == 'sell':
+                        self.sell_tower(*cell_pos)
+                    elif action == 'upgrade':
+                        self.upgrade_tower(*cell_pos)
+                    elif issubclass(action, BaseTower):
+                        self.add_tower_to_cell(action, *cell_pos)
+                        self.settings.money -= self.settings.tower_cost[action.__name__]
+                    self.settings.action = None
 
     def mouse_click(self, cell_pos):
         obj = self.get_object_in_cell(*cell_pos)
@@ -77,28 +79,24 @@ class Board:
             return
         object_top_left = self.get_cell_top_left_coordinates(row, col)
         self.board[row][col] = tower(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size))
-        self.settings.selected_tower = None
-        self.settings.money -= self.settings.tower_cost[tower.__name__]
 
     def sell_tower(self, row, col):
-        tower = self.board[row][col]
+        tower = self.get_object_in_cell(row, col)
         try:
             if issubclass(tower.__class__, BaseTower):
                 self.settings.money += self.settings.tower_cost[tower.__class__.__name__] // 2
                 tower.kill()
                 self.board[row][col] = None
-                self.settings.selected_tower = None
         except TypeError:
-            pass
+            return
 
     def upgrade_tower(self, row, col):
-        tower = self.board[row][col]
+        tower = self.get_object_in_cell(row, col)
         try:
             if issubclass(tower.__class__, BaseTower):
                 tower.upgrade()
-                self.settings.selected_tower = None
         except TypeError:
-            pass
+            return
 
     def spawn_enemy(self):
         spawn_cell_rect = pg.Rect(self.get_cell_top_left_coordinates(*self.enemy_start_cell),

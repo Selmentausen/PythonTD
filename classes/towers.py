@@ -65,6 +65,7 @@ class BaseTower(pg.sprite.Sprite):
             self.level += 1
             self.image = pg.transform.scale(self.tower_image[self.level - 1], self.size)
             self.upgrade_stats()
+            print(self.damage, self.attack_speed, self.range)
             self.settings.money -= self.settings.tower_upgrade_cost[self.__class__.__name__][self.level - 2]
 
     def upgrade_stats(self):
@@ -90,7 +91,7 @@ class NormalTower(BaseTower):
 
     def upgrade_stats(self):
         self.damage = int(self.damage * 2)
-        self.range = int(self.range * 1.3)
+        self.range += 1
 
 
 class FastTower(BaseTower):
@@ -113,7 +114,7 @@ class FastTower(BaseTower):
     def upgrade_stats(self):
         self.damage = int(self.damage * 1.2)
         self.attack_speed = self.attack_speed * 0.8
-        self.range = int(self.range * 1.1)
+
 
 
 class SplitTower(BaseTower):
@@ -134,7 +135,8 @@ class SplitTower(BaseTower):
     def upgrade_stats(self):
         self.targets += 1
         self.damage = int(self.damage * 1.5)
-        self.range = int(self.range * 1.2)
+        if self.level == 3:
+            self.range += 1
 
 
 class Bullet(pg.sprite.Sprite):
