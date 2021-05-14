@@ -3,6 +3,7 @@ import sys
 import os
 
 pg.init()
+pg.mixer.init()
 screen = pg.display.set_mode((1024, 768))
 clock = pg.time.Clock()
 
@@ -167,6 +168,8 @@ def main_loop(level):
 
 
 def main():
+    background_music = pg.mixer.Sound('data/sounds/background.mp3')
+    background_music.play(loops=-1)
     start_screen(screen)
     levels = [lvl for lvl in os.listdir('data/maps') if lvl.split('.')[-1] == 'txt']
     current_level = levels.pop(0)

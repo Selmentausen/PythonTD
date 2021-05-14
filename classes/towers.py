@@ -1,18 +1,21 @@
 from functions import load_image
 import pygame as pg
-from math import hypot
-from random import sample
+from math import hypot, atan2, degrees
+from random import choice
 
 
 class BaseTower(pg.sprite.Sprite):
     tower_image = [load_image('towers/ArrowTower.png')]
     radius_image = load_image('towers/tower_radius.png')
+    tower_upgrade_sound = pg.mixer.Sound('data/sounds/tower_upgrade.WAV')
 
     def __init__(self, settings, top_left, size):
         super(BaseTower, self).__init__(settings.all_sprites, settings.tower_sprites)
 
-        self.image = pg.transform.scale(self.tower_image[0], size)
+        self.original_image = pg.transform.scale(self.tower_image[0], size)
+        self.image = self.original_image
         self.size = size
+        self.top_left = top_left
         self.rect = self.image.get_rect()
         self.rect.x, self.rect.y = top_left
         self.settings = settings
@@ -33,19 +36,41 @@ class BaseTower(pg.sprite.Sprite):
             self.draw_tower_radius(screen)
         enemies = self.get_objects_in_range(self.settings.enemy_sprites)
         if enemies:
+            enemies = self.select_enemy_to_shoot(enemies)
             self.shoot(enemies)
+
+    def rotate_to_shooting_enemy(self, enemy):
+        rel_x, rel_y = enemy.rect.x - self.rect.x, enemy.rect.y - self.rect.y
+        rotation = degrees(atan2(rel_x, rel_y))
+        rotated_image = pg.transform.rotate(self.original_image, rotation)
+        self.rect = rotated_image.get_rect(center=self.image.get_rect(topleft=self.rect.topleft).center)
+        self.image = rotated_image
+
+    def select_enemy_to_shoot(self, enemies) -> object:
+        if self.hit_order == 'first':
+            enemy = enemies[0]
+        elif self.hit_order == 'last':
+            enemy = enemies[-1]
+        elif self.hit_order == 'closest':
+            enemy = min(enemies, key=lambda obj: abs(hypot(*self.rect.center) - hypot(*enemy.rect.center)))
+        elif self.hit_order == 'farthest':
+            enemy = max(enemies, key=lambda obj: abs(hypot(*self.rect.center) - hypot(*enemy.rect.center)))
+        else:
+            enemy = choice(enemies)
+        self.rotate_to_shooting_enemy(enemy)
+        return enemy
 
     def draw_tower_radius(self, screen):
         img = pg.transform.scale(self.radius_image,
-                                 (self.rect.size[0] * (self.range * 2 + 1),
-                                  self.rect.size[0] * (self.range * 2 + 1)))
+                                 (self.size[0] * (self.range * 2 + 1),
+                                  self.size[0] * (self.range * 2 + 1)))
         img.set_alpha(100)
-        screen.blit(img, (self.rect.x - self.range * self.rect.size[0], self.rect.y - self.range * self.rect.size[1]))
+        screen.blit(img, (self.top_left[0] - self.range * self.size[0], self.top_left[1] - self.range * self.size[1]))
 
     def get_objects_in_range(self, group):
         objects = []
-        origin = self.rect
-        width, height = self.rect.size
+        origin = self.top_left
+        width, height = self.size
         top_left = origin[0] - width * self.range, origin[1] - height * self.range
         bottom_right = origin[0] + width * (self.range + 1), origin[1] + height * (self.range + 1)
         for obj in group:
@@ -64,8 +89,9 @@ class BaseTower(pg.sprite.Sprite):
                 and self.settings.money >= self.settings.tower_upgrade_cost[self.__class__.__name__][self.level - 1]:
             self.level += 1
             self.image = pg.transform.scale(self.tower_image[self.level - 1], self.size)
+            self.original_image = self.image
             self.upgrade_stats()
-            print(self.damage, self.attack_speed, self.range)
+            self.tower_upgrade_sound.play()
             self.settings.money -= self.settings.tower_upgrade_cost[self.__class__.__name__][self.level - 2]
 
     def upgrade_stats(self):
@@ -76,18 +102,13 @@ class NormalTower(BaseTower):
     tower_image = [load_image('towers/normal_tower_lvl1.png'),
                    load_image('towers/normal_tower_lvl2.png'),
                    load_image('towers/normal_tower_lvl3.png')]
+    tower_shoot_sound = pg.mixer.Sound('data/sounds/tower_shoot.WAV')
 
-    def shoot(self, enemies):
+    def shoot(self, enemy):
         if not self.attack_cooldown:
-            if self.hit_order == 'first':
-                enemy = enemies[0]
-            elif self.hit_order == 'last':
-                enemy = enemies[-1]
-            else:
-                # get closest enemy to tower
-                enemy = min(enemies, key=lambda obj: abs(hypot(*self.rect.center) - hypot(*enemy.rect.center)))
             Bullet(self.rect.center, enemy, self.damage, self.settings)
             self.attack_cooldown = self.attack_speed
+            self.tower_shoot_sound.play()
 
     def upgrade_stats(self):
         self.damage = int(self.damage * 2)
@@ -98,39 +119,46 @@ class FastTower(BaseTower):
     tower_image = [load_image('towers/fast_tower_lvl1.png'),
                    load_image('towers/fast_tower_lvl2.png'),
                    load_image('towers/fast_tower_lvl3.png')]
+    tower_shoot_sound = pg.mixer.Sound('data/sounds/tower_shoot.WAV')
 
-    def shoot(self, enemies):
+    def shoot(self, enemy):
         if not self.attack_cooldown:
-            if self.hit_order == 'first':
-                enemy = enemies[0]
-            elif self.hit_order == 'last':
-                enemy = enemies[-1]
-            else:
-                # get closest enemy to tower
-                enemy = min(enemies, key=lambda obj: abs(hypot(*self.rect.center) - hypot(*enemy.rect.center)))
             Bullet(self.rect.center, enemy, self.damage, self.settings)
             self.attack_cooldown = self.attack_speed
+            self.tower_shoot_sound.play()
 
     def upgrade_stats(self):
         self.damage = int(self.damage * 1.2)
         self.attack_speed = self.attack_speed * 0.8
 
 
-
 class SplitTower(BaseTower):
     tower_image = [load_image('towers/split_tower_lvl1.png'),
                    load_image('towers/split_tower_lvl2.png'),
                    load_image('towers/split_tower_lvl3.png')]
+    tower_shoot_sound = pg.mixer.Sound('data/sounds/split_tower_shoot.WAV')
 
     def __init__(self, settings, top_left, size):
         super(SplitTower, self).__init__(settings, top_left, size)
         self.targets = settings.split_tower_targets
 
+    def select_enemy_to_shoot(self, enemies) -> object:
+        new_enemies = []
+        for _ in range(self.targets):
+            if not enemies:
+                break
+            enemy = super(SplitTower, self).select_enemy_to_shoot(enemies)
+            enemies.remove(enemy)
+            new_enemies.append(enemy)
+        self.rotate_to_shooting_enemy(new_enemies[0])
+        return new_enemies
+
     def shoot(self, enemies):
         if not self.attack_cooldown:
-            for enemy in sample(enemies, k=min(len(enemies), self.targets)):
+            for enemy in enemies:
                 Bullet(self.rect.center, enemy, self.damage, self.settings)
             self.attack_cooldown = self.attack_speed
+            self.tower_shoot_sound.play()
 
     def upgrade_stats(self):
         self.targets += 1

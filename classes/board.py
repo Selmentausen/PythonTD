@@ -4,6 +4,10 @@ from .towers import BaseTower
 
 
 class Board:
+    sounds = {'tower_placed': pg.mixer.Sound('data/sounds/tower_placed.WAV'),
+              'tower_sold': pg.mixer.Sound('data/sounds/tower_sold.WAV'),
+              'cell_occupied': pg.mixer.Sound('data/sounds/cell_occupied.WAV')}
+
     def __init__(self, board_list, settings):
         screen_width, screen_height = settings.screen_size
         screen_size = screen_width, screen_height * settings.map_height
@@ -49,7 +53,6 @@ class Board:
                         self.upgrade_tower(*cell_pos)
                     elif issubclass(action, BaseTower):
                         self.add_tower_to_cell(action, *cell_pos)
-                        self.settings.money -= self.settings.tower_cost[action.__name__]
                     self.settings.action = None
 
     def mouse_click(self, cell_pos):
@@ -74,11 +77,14 @@ class Board:
         return self.cell_x_size * (col + 1), self.cell_y_size * (row + 1)
 
     def add_tower_to_cell(self, tower, row, col):
-        if self.board[row][col]:
+        if self.get_object_in_cell(row, col):
             print('cell occupied')
+            self.sounds['cell_occupied'].play()
             return
         object_top_left = self.get_cell_top_left_coordinates(row, col)
         self.board[row][col] = tower(self.settings, object_top_left, (self.cell_x_size, self.cell_y_size))
+        self.settings.money -= self.settings.tower_cost[tower.__name__]
+        self.sounds['tower_placed'].play()
 
     def sell_tower(self, row, col):
         tower = self.get_object_in_cell(row, col)
@@ -87,6 +93,7 @@ class Board:
                 self.settings.money += self.settings.tower_cost[tower.__class__.__name__] // 2
                 tower.kill()
                 self.board[row][col] = None
+                self.sounds['tower_sold'].play()
         except TypeError:
             return
 

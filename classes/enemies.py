@@ -22,6 +22,10 @@ ROAD_DIRECTIONS = {
 
 
 class EnemyBase(pg.sprite.Sprite):
+    enemy_hit_sound = pg.mixer.Sound('data/sounds/enemy_hit.WAV')
+    enemy_killed_sound = pg.mixer.Sound('data/sounds/enemy_killed.WAV')
+    enemy_reached_base = pg.mixer.Sound('data/sounds/enemy_reached_base.WAV')
+
     def __init__(self, settings, board):
         super(EnemyBase, self).__init__(settings.enemy_sprites, settings.all_sprites)
         self.image = ENEMY_IMAGES['placeholder_enemy']
@@ -109,14 +113,17 @@ class EnemyBase(pg.sprite.Sprite):
 
     def die(self, at_finish=False):
         if at_finish:
+            self.enemy_reached_base.play()
             self.settings.lives -= 1
             self.kill()
         elif self.alive():
+            self.enemy_killed_sound.play()
             self.settings.money += self.settings.kill_reward
             self.kill()
 
     def hit(self, damage):
         self.hp -= damage
+        self.enemy_hit_sound.play()
         if self.hp <= 0:
             self.die()
             return
